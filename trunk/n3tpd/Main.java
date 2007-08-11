@@ -19,6 +19,10 @@
 
 package n3tpd;
 
+import java.io.File;
+import java.io.IOException;
+import n3tpd.storage.Purger;
+
 /**
  * Startup class of the n3tpd.
  * @author Christian Lins
@@ -30,6 +34,13 @@ public class Main
 
   public static void main(String args[]) throws Exception
   {
+    // Checking configuration...
+    File dataPath = new File(Config.getInstance().get("n3tpd.datadir"));
+    if(!dataPath.exists())
+      if(!dataPath.mkdir())
+        throw new IOException("Could not create data directory!");
+
+    new Purger().start();
     new NNTPServer().start();
   }
 }
