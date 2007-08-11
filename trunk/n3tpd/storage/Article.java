@@ -136,7 +136,7 @@ public class Article
         start = Integer.parseInt(number) + 1;
     }
 
-    for(int n = start;; n++) // Starting with 1, zero is not nice
+    for(int n = start;; n++)
     {
       String filepath = path + n + ".news";
       File file = new File(filepath);
