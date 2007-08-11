@@ -18,6 +18,9 @@
 
 package n3tpd.storage;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Stack;
 import n3tpd.Config;
 
 /**
@@ -34,7 +37,9 @@ public class Purger extends Thread
     setDaemon(false);
     setPriority(Thread.MIN_PRIORITY);
 
-    this.interval = Integer.parseInt(Config.get("n3tpd.article.lifetime"));
+    this.interval = Config.getInstance().get("n3tpd.article.lifetime", 30) * 24 * 60 * 60 * 1000; // Milliseconds
+    if(this.interval < 0)
+      this.interval = Integer.MAX_VALUE;
   }
   
   public void run()
@@ -54,8 +59,40 @@ public class Purger extends Thread
     }
   }
   
+  private Stack<String> getAllFiles(File root)
+  {
+    Stack<String> all = new Stack<String>();
+    for(File file : root.listFiles())
+    {
+      if(file.isDirectory())
+        all.addAll(getAllFiles(file));
+      else
+        all.push(file.getAbsolutePath());
+    }
+
+    return all;
+  }
+
   private void purge()
   {
-    
+    System.out.println("Purging old messages...");
+
+    String dataPath = Config.getInstance().get("n3tpd.datadir");
+    File   dataPaFi = new File(dataPath);
+
+    Stack<String> allFiles = getAllFiles(dataPaFi);
+    while(!allFiles.isEmpty())
+    {
+      try
+      {
+        String  path = allFiles.pop();
+        Article art  = new Article(path);
+        art.loadFromFile();
+      }
+      catch(IOException e)
+      {
+        e.printStackTrace();
+      }
+    }
   }
 }
