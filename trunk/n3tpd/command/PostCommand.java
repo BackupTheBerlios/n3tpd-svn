@@ -53,6 +53,11 @@ public class PostCommand extends Command
     while(line != null)
     {
       bodySize += line.length();
+      if(bodySize > maxBodySize)
+      {
+        printStatus(500, "article is too long");
+        return false;
+      }
 
       if(!isHeader)
       { // body
