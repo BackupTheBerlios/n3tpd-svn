@@ -29,8 +29,8 @@ public class NNTPServer extends Thread
   public NNTPServer() throws IOException
   {
     socket = new ServerSocket(
-        Integer.parseInt(Config.getInstance().getProperty("n3tpd.port")),
-        Integer.parseInt(Config.getInstance().getProperty("n3tpd.server.backlog")));
+        Integer.parseInt(Config.getInstance().get("n3tpd.port")),
+        Integer.parseInt(Config.getInstance().get("n3tpd.server.backlog")));
   }
 
   public void run()
