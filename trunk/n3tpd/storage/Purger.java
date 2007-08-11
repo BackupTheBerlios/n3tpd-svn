@@ -18,6 +18,8 @@
 
 package n3tpd.storage;
 
+import n3tpd.Config;
+
 /**
  * The purger is started in configurable intervals to search
  * for old messages that can be purged.
@@ -31,6 +33,8 @@ public class Purger extends Thread
   {
     setDaemon(false);
     setPriority(Thread.MIN_PRIORITY);
+
+    this.interval = Integer.parseInt(Config.get("n3tpd.article.lifetime"));
   }
   
   public void run()
@@ -38,6 +42,15 @@ public class Purger extends Thread
     for(;;)
     {
       purge();
+
+      try
+      {
+        sleep(interval);
+      }
+      catch(InterruptedException e)
+      {
+        e.printStackTrace();
+      }
     }
   }
   
