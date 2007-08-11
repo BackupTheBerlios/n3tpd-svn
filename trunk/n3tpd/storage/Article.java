@@ -125,7 +125,18 @@ public class Article
       + header.get("Newsgroups").replace('.', File.separatorChar) 
       + File.separatorChar;
     
-    for(int n = 1;; n++) // Starting with 1, zero is not nice
+    // Get one filename...
+    int start = 1;
+    File dir  = new File(path);
+    File[] fs = dir.listFiles();
+    if(fs.length > 0)
+    {
+      String number = fs[fs.length-1].getName().substring(0, fs[fs.length-1].getName().indexOf("."));
+      if(number != null)
+        start = Integer.parseInt(number) + 1;
+    }
+
+    for(int n = start;; n++) // Starting with 1, zero is not nice
     {
       String filepath = path + n + ".news";
       File file = new File(filepath);
@@ -306,6 +317,19 @@ public class Article
     return header;
   }
   
+  public Timestamp getDate()
+  {
+    try
+    {
+      String date = this.header.get("Date");
+      return Timestamp.valueOf(date);
+    }
+    catch(IllegalArgumentException e)
+    {
+      return null;
+    }
+  }
+
   public void setDate(Timestamp date)
   {
     this.header.put("Date", date.toString());
