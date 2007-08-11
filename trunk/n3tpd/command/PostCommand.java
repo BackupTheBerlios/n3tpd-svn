@@ -19,7 +19,7 @@
 
 package n3tpd.command;
 
-import java.io.*;
+import java.io.IOException;
 import java.sql.*;
 import java.text.*;
 import java.util.*;
@@ -41,7 +41,7 @@ public class PostCommand extends Command
     Article article = new Article();
     int lineCount     = 0;
     long bodySize     = 0;
-    long maxBodySize  = Config.getInstance().get("n3tpd.article.maxsize", 1024 * 1024);
+    long maxBodySize  = Config.getInstance().get("n3tpd.article.maxsize", 1024) * 1024; // Size in bytes
 
     // begin with a stringbuilder body
     StringBuilder body = new StringBuilder();
