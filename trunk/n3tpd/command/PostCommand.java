@@ -28,8 +28,6 @@ import n3tpd.storage.Article;
 
 public class PostCommand extends Command
 {
-  public static final int MAX_BODY_SIZE = 1024 * 1024; // 1 MByte TODO: Make it configurable
-
   public PostCommand(NNTPConnection conn)
   {
     super(conn);
@@ -41,8 +39,9 @@ public class PostCommand extends Command
 
     // some initialization
     Article article = new Article();
-    int lineCount = 0;
-    long bodySize = 0;
+    int lineCount     = 0;
+    long bodySize     = 0;
+    long maxBodySize  = 0;
 
     // begin with a stringbuilder body
     StringBuilder body = new StringBuilder();
