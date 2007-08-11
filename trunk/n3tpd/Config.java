@@ -84,24 +84,50 @@ public class Config
     settings.store(new FileOutputStream(FILE), "N3TPD Config File");
   }
 
-  public Properties getProperties()
+  public Properties get()
   {
     return settings;
   }
-
-  public String getProperty(String key)
-  {
-    return settings.getProperty(key);
-  }
   
-  public String getProperty(String key, String def)
+  public String get(String key, String def)
   {
     return settings.getProperty(key, def);
   }
 
-  public void setProperty(String key, Object value)
+  public int get(String key, int def)
   {
-    settings.setProperty(key, value.toString());
+    try
+    {
+      String val = get(key);
+      return Integer.parseInt(val);
+    }
+    catch(Exception e)
+    {
+      return def;
+    }
+  }
+
+  public long get(String key, long def)
+  {
+    try
+    {
+      String val = get(key);
+      return Long.parseLong(val);
+    }
+    catch(Exception e)
+    {
+      return def;
+    }
+  }
+
+  public String get(String key)
+  {
+    return settings.getProperty(key);
+  }
+
+  public void set(String key, String value)
+  {
+    settings.setProperty(key, value);
   }
 
 }
