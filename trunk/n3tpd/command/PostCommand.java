@@ -41,7 +41,7 @@ public class PostCommand extends Command
     Article article = new Article();
     int lineCount     = 0;
     long bodySize     = 0;
-    long maxBodySize  = 0;
+    long maxBodySize  = Config.getInstance().get("n3tpd.article.maxsize", 1024 * 1024);
 
     // begin with a stringbuilder body
     StringBuilder body = new StringBuilder();
@@ -52,6 +52,8 @@ public class PostCommand extends Command
     String line = readTextLine();
     while(line != null)
     {
+      bodySize += line.length();
+
       if(!isHeader)
       { // body
         if(line.trim().equals("."))
