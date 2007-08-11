@@ -30,18 +30,13 @@ public class Group
   private String name;
   private File   path;
 
-  // private Timestamp creationDate = new Timestamp (new Date().getTime());
   private int    firstArticle = Integer.MAX_VALUE;
   private int    lastArticle  = 0;
 
-  // private Timestamp lastArticleDate = null;
-
   public Group(File path)
   {
-    this.name = path.getAbsolutePath()
-      .substring(
-          new File(
-              Config.getInstance().getProperty("n3tpd.datadir")).getAbsolutePath().length() + 1);
+    this.name = path.getAbsolutePath().substring(
+      new File(Config.getInstance().get("n3tpd.datadir")).getAbsolutePath().length() + 1);
     this.name = this.name.replace(File.separatorChar, '.');
     this.path = path;
     
@@ -73,7 +68,7 @@ public class Group
   public static Group getByName(String name)
   {
     name = name.replace('.', File.separatorChar);
-    File dir = new File(Config.getInstance().getProperty("n3tpd.datadir")
+    File dir = new File(Config.getInstance().get("n3tpd.datadir")
         + File.separatorChar + name);
 
     if (dir.exists())
@@ -115,7 +110,7 @@ public class Group
   {
     ArrayList<Group> grpLst = new ArrayList<Group>();
 
-    File dataDir = new File(Config.getInstance().getProperty("n3tpd.datadir"));
+    File dataDir = new File(Config.getInstance().get("n3tpd.datadir"));
     addSubGroups(grpLst, dataDir);
 
     return grpLst;
