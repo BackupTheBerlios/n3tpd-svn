@@ -19,9 +19,10 @@
 
 package n3tpd.storage;
 
-import java.io.*;
-import java.util.*;
-
+import java.io.File;
+import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import n3tpd.Config;
 
 public class Group

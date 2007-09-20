@@ -19,8 +19,8 @@
 
 package n3tpd.command;
 
-import java.io.*;
-import n3tpd.*;
+import java.io.IOException;
+import n3tpd.NNTPConnection;
 import n3tpd.storage.Group;
 
 public class GroupCommand extends Command

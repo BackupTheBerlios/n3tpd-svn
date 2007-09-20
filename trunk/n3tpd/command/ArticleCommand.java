@@ -19,10 +19,10 @@
 
 package n3tpd.command;
 
-import java.io.*;
-import java.util.*;
-
-import n3tpd.*;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import n3tpd.NNTPConnection;
 import n3tpd.storage.Article;
 
 public class ArticleCommand extends Command
@@ -36,7 +36,7 @@ public class ArticleCommand extends Command
   {
     String commandName = command[0];
 
-    // untested, RFC977 complient
+    // untested, RFC977 compliant
     Article article = null;
     if (command.length <= 1)
     {

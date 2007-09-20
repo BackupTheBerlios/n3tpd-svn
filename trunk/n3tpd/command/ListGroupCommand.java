@@ -21,7 +21,7 @@ package n3tpd.command;
 
 import java.io.IOException;
 import java.util.LinkedList;
-import n3tpd.*;
+import n3tpd.NNTPConnection;
 import n3tpd.storage.Article;
 import n3tpd.storage.Group;
 

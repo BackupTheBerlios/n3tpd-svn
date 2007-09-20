@@ -53,7 +53,7 @@ public class Config
     return instance;
   }
 
-  private Properties              settings      = defaultConfig;
+  private Properties settings = defaultConfig;
 
   private Config()
   {
@@ -94,6 +94,14 @@ public class Config
     return settings.getProperty(key, def);
   }
 
+  /**
+   * Returns the value that is stored within this config
+   * identified by the given key. If the key cannot be found
+   * the default value def is returned.
+   * @param key
+   * @param def
+   * @return
+   */
   public int get(String key, int def)
   {
     try

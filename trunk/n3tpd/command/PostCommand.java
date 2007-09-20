@@ -20,10 +20,12 @@
 package n3tpd.command;
 
 import java.io.IOException;
-import java.sql.*;
-import java.text.*;
-import java.util.*;
-import n3tpd.*;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Locale;
+import n3tpd.Config;
+import n3tpd.NNTPConnection;
 import n3tpd.storage.Article;
 
 public class PostCommand extends Command

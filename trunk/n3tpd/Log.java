@@ -1,7 +1,6 @@
 /*
  *   Netvader NNTP Daemon (n3tpd)
  *   Copyright (C) 2007 by Christian Lins <christian.lins@web.de>
- *   based on tnntpd (C) 2003 by Dennis Schwerdel
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,32 +18,11 @@
 
 package n3tpd;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-
-public class NNTPServer extends Thread
+/**
+ * Provides logging and debugging methods.
+ * @author Christian Lins
+ */
+public class Log
 {
-  private ServerSocket socket;
 
-  public NNTPServer() throws IOException
-  {
-    int port    = Config.getInstance().get("n3tpd.port", 119);
-    int backlog = Config.getInstance().get("n3tpd.server.backlog", 10);
-    socket = new ServerSocket(port, backlog);
-  }
-
-  public void run()
-  {
-    for(;;)
-    {
-      try
-      {
-        new NNTPConnection(socket.accept()).start();
-      }
-      catch (IOException e)
-      {
-        e.printStackTrace();
-      }
-    }
-  }
 }

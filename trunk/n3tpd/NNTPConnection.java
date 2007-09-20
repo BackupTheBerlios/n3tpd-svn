@@ -19,19 +19,27 @@
 
 package n3tpd;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
+import java.net.SocketException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
-
-import n3tpd.command.*;
+import n3tpd.command.ArticleCommand;
+import n3tpd.command.GroupCommand;
+import n3tpd.command.ListCommand;
+import n3tpd.command.PostCommand;
+import n3tpd.command.XOverCommand;
 import n3tpd.storage.Article;
 import n3tpd.storage.Group;
 
 public class NNTPConnection extends Thread
 {
-
   public static final String NEWLINE            = "\r\n";
   public static final String MESSAGE_ID_PATTERN = "<[^>]+>";
   
