@@ -30,7 +30,8 @@ import java.util.Properties;
  */
 public class Config
 {
-  public static final String      FILE          = "n3tpd.conf";
+  public static final String CONFIG_N3TPD_LOGFILE = "n3tpd.logfile";
+  public static final String FILE                 = "n3tpd.conf";
 
   private static final Properties defaultConfig = new Properties();
   

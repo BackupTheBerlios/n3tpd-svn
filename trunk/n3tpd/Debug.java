@@ -18,11 +18,53 @@
 
 package n3tpd;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Date;
+
 /**
  * Provides logging and debugging methods.
  * @author Christian Lins
  */
-public class Log
+public class Debug
 {
-
+  private static Debug instance = null;
+  
+  public static Debug getInstance()
+  {
+    if(instance == null)
+      instance = new Debug();
+    
+    return instance;
+  }
+  
+  private PrintStream out = System.err;
+  
+  private Debug()
+  {
+    try
+    {
+      String filename = Config.getInstance().get(Config.CONFIG_N3TPD_LOGFILE);
+      
+      this.out = new PrintStream(new FileOutputStream(filename));
+    }
+    catch(IOException e)
+    {
+      e.printStackTrace();
+    }
+  }
+  
+  public PrintStream getStream()
+  {
+    return out;
+  }
+  
+  public void log(String msg)
+  {
+    out.print(new Date().toString());
+    out.print(": ");
+    out.println(msg);
+    out.flush();
+  }
 }
