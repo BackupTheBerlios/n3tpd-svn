@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Stack;
 import n3tpd.Config;
+import n3tpd.Debug;
 
 /**
  * The purger is started in configurable intervals to search
@@ -54,7 +55,7 @@ public class Purger extends Thread
       }
       catch(InterruptedException e)
       {
-        e.printStackTrace();
+        e.printStackTrace(Debug.getInstance().getStream());
       }
     }
   }
@@ -75,7 +76,7 @@ public class Purger extends Thread
 
   private void purge()
   {
-    System.out.println("Purging old messages...");
+    Debug.getInstance().log("Purging old messages...");
 
     String dataPath = Config.getInstance().get("n3tpd.datadir");
     File   dataPaFi = new File(dataPath);
@@ -91,7 +92,7 @@ public class Purger extends Thread
       }
       catch(IOException e)
       {
-        e.printStackTrace();
+        e.printStackTrace(Debug.getInstance().getStream());
       }
     }
   }
