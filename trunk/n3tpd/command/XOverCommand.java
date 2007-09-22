@@ -94,7 +94,7 @@ public class XOverCommand extends Command
     overview.append('\t');
     overview.append(art.getHeader().get("From"));
     overview.append('\t');
-    overview.append(art.getHeader().get("Date"));
+    overview.append(art.getDate().toString());
     overview.append('\t');
     overview.append(art.getHeader().get("Message-ID"));
     overview.append('\t');

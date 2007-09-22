@@ -39,8 +39,6 @@ public class Main
     if(!dataPath.exists())
       if(!dataPath.mkdir())
         throw new IOException("Could not create data directory!");
-    
-    Debug.getInstance().log(VERSION + " starting...");
 
     new Purger().start();
     new NNTPServer().start();

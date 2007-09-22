@@ -45,7 +45,7 @@ public class Article
 {
   private String                  body;
   private String                  filePath  = null;
-  private HashMap<String, String> header;
+  private HashMap<String, String> header    = null;
   private int                     id        = -1;
   private String                  messageID;
   
@@ -322,7 +322,7 @@ public class Article
     try
     {
       String date = this.header.get("Date");
-      return new Date(Integer.parseInt(date));
+      return new Date(Long.parseLong(date));
     }
     catch(IllegalArgumentException e)
     {

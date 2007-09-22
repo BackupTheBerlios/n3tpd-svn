@@ -84,7 +84,12 @@ public class ArticleCommand extends Command
       HashMap<String, String> header = article.getHeader();
       for(Map.Entry<String, String> entry : header.entrySet())
       {
-        printTextPart(entry.getKey() + ": " + entry.getValue());
+        if(entry.getKey().equals("Date"))
+        {
+          printTextPart("Date: " + article.getDate().toString());
+        }
+        else
+          printTextPart(entry.getKey() + ": " + entry.getValue());
       }
       println("");
       printText(article.getBody());

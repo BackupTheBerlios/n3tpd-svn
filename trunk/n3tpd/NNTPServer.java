@@ -43,7 +43,7 @@ public class NNTPServer extends Thread
       }
       catch (IOException e)
       {
-        e.printStackTrace(Debug.getInstance().getStream());
+        e.printStackTrace();
       }
     }
   }
