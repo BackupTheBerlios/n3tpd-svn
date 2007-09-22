@@ -27,13 +27,13 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
-
 import n3tpd.Config;
+import n3tpd.Debug;
 import n3tpd.NNTPConnection;
 
 /**
@@ -317,21 +317,30 @@ public class Article
     return header;
   }
   
-  public Timestamp getDate()
+  public Date getDate()
   {
     try
     {
       String date = this.header.get("Date");
-      return Timestamp.valueOf(date);
+      return new Date(Integer.parseInt(date));
     }
     catch(IllegalArgumentException e)
     {
+      e.printStackTrace(Debug.getInstance().getStream());
       return null;
     }
   }
 
-  public void setDate(Timestamp date)
+  public void setDate(Date date)
   {
-    this.header.put("Date", date.toString());
+    if(this.header == null)
+      Debug.getInstance().log("Article.class::setDate()\tHeader is null! Called before setHeader?");
+    else
+      this.header.put("Date", Long.toString(date.getTime()));
+  }
+  
+  public String toString()
+  {
+    return messageID;
   }
 }

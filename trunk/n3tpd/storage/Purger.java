@@ -20,6 +20,7 @@ package n3tpd.storage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Stack;
 import n3tpd.Config;
 import n3tpd.Debug;
@@ -78,8 +79,9 @@ public class Purger extends Thread
   {
     Debug.getInstance().log("Purging old messages...");
 
-    String dataPath = Config.getInstance().get("n3tpd.datadir");
-    File   dataPaFi = new File(dataPath);
+    String dataPath     = Config.getInstance().get("n3tpd.datadir");
+    File   dataPaFi     = new File(dataPath);
+    long   timeTreshold = new Date().getTime() - this.interval;
 
     Stack<String> allFiles = getAllFiles(dataPaFi);
     while(!allFiles.isEmpty())
@@ -89,6 +91,14 @@ public class Purger extends Thread
         String  path = allFiles.pop();
         Article art  = new Article(path);
         art.loadFromFile();
+        
+        // Check date
+        if(art.getDate().getTime() < timeTreshold)
+        {
+          Debug.getInstance().log("Deleting " + art);
+          if(!art.delete())
+            Debug.getInstance().log("Deletion of " + art + " failed!");
+        }
       }
       catch(IOException e)
       {

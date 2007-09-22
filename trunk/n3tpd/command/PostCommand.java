@@ -20,11 +20,12 @@
 package n3tpd.command;
 
 import java.io.IOException;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import n3tpd.Config;
+import n3tpd.Debug;
 import n3tpd.NNTPConnection;
 import n3tpd.storage.Article;
 
@@ -89,21 +90,21 @@ public class PostCommand extends Command
     } // end of input reading
 
     article.setBody(body.toString()); // set the article body
-
-    // read the date header and fall back to the current date if it is not set
+    article.setHeader(header);     // add the header entries for the article
+    
+    // Read the date header and fall back to the current date if it is not set
     try
     {
-      article.setDate(new Timestamp(
-        new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US).parse(header.get("DATE")).getTime())) ;
-    }
-    catch (NullPointerException e)
-    {
-      // article.setDate(new Timestamp(new Date().getTime())) ;
-      // header.put("Date",new SimpleDateFormat ("EEE, dd MMM yyyy HH:mm:ss
-      // Z",Locale.US).format(article.getDate())) ;
+      SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
+      String date = header.get("DATE");
+      if(date == null)
+        article.setDate(new Date());
+      else
+        article.setDate(new Date(sdf.parse(date).getTime())) ;
     }
     catch (Exception e)
     {
+      e.printStackTrace(Debug.getInstance().getStream());
       printStatus(541, "posting failed - invalid date format");
       return true;
     }
@@ -167,9 +168,6 @@ public class PostCommand extends Command
     // if needed, set an empty references header
     if (!header.containsKey("REFERENCES"))
       header.put("References", "");
-
-    // add the header entries for the article
-    article.setHeader(header);
 
     // try to create the article in the database
     article.writeToFile();
