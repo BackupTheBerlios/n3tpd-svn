@@ -20,6 +20,9 @@
 package n3tpd.command;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import n3tpd.NNTPConnection;
 import n3tpd.storage.Article;
 
@@ -88,6 +91,7 @@ public class XOverCommand extends Command
   
   private String buildOverview(Article art, int nr)
   {
+    SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
     StringBuilder overview = new StringBuilder();
     overview.append(nr);
     overview.append('\t');
@@ -95,7 +99,7 @@ public class XOverCommand extends Command
     overview.append('\t');
     overview.append(art.getHeader().get("From"));
     overview.append('\t');
-    overview.append(art.getDate().toString());
+    overview.append(sdf.format(art.getDate()));
     overview.append('\t');
     overview.append(art.getHeader().get("Message-ID"));
     overview.append('\t');

@@ -20,7 +20,9 @@
 package n3tpd.command;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import n3tpd.NNTPConnection;
 import n3tpd.storage.Article;
@@ -86,7 +88,8 @@ public class ArticleCommand extends Command
       {
         if(entry.getKey().equals("Date"))
         {
-          printTextPart("Date: " + article.getDate().toString());
+          SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
+          printTextPart("Date: " + sdf.format(article.getDate()));
         }
         else
           printTextPart(entry.getKey() + ": " + entry.getValue());

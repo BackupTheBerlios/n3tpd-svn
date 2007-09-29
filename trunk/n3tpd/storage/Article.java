@@ -47,7 +47,6 @@ public class Article
   private String                  filePath  = null;
   private HashMap<String, String> header    = null;
   private int                     id        = -1;
-  //private String                  messageID;
   
   public Article()
   {
@@ -259,13 +258,18 @@ public class Article
     
     // Check if the references are correct...
     String rep = header.get("In-Reply-To");
+    if(rep == null) // Some clients use only references instead of In-Reply-To
+      rep = header.get("References");
+    
     String ref = getMessageID();
     
     if(rep != null && !rep.equals(""))
     {
       Article art = getByMessageID(rep, articleDir);
       if(art != null)
+      {
         ref = art.getHeader().get("References") + " " + rep;
+      }
     }
     header.put("References", ref);
   }
