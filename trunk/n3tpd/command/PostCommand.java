@@ -29,6 +29,11 @@ import n3tpd.Debug;
 import n3tpd.NNTPConnection;
 import n3tpd.storage.Article;
 
+/**
+ * Contains the code for the POST command.
+ * @author Christian Lins
+ * @author Dennis Schwerdel
+ */
 public class PostCommand extends Command
 {
   public PostCommand(NNTPConnection conn)
@@ -109,12 +114,6 @@ public class PostCommand extends Command
       return true;
     }
 
-    // read the message-id header
-    if (header.containsKey("MESSAGE-ID"))
-    {
-      article.setMessageID(header.get("MESSAGE-ID")) ;
-    }
-
     // check for a cancel command
     if ( header.containsKey("CONTROL") ) 
     {
@@ -136,29 +135,6 @@ public class PostCommand extends Command
         }
       }
     }
-
-    // check for a supersede command
-    if (header.containsKey("SUPERSEDES"))
-    {
-      // just set set the message id to that of the original article
-      article.setMessageID(header.get("SUPERSEDES")) ;
-      // try to delete the old article
-      try
-      {
-        Article.getByMessageID(header.get("SUPERSEDES")).delete();
-      }
-      catch (Exception e)
-      {
-
-        printStatus(441, "posting failed - original posting not found");
-        return false; // quit, no article to supersede
-      }
-      return true;
-    }
-
-    // if no message-id has been set so far, generate one
-    if (article.getMessageID() == null)
-      article.generateMessageID();
 
     // set some headers
     header.put("Message-ID", article.getMessageID());

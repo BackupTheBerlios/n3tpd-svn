@@ -25,6 +25,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import n3tpd.Config;
 
+/**
+ * Represents a logical Group within this newsserver.
+ * @author Christian Lins
+ */
 public class Group
 {
   private int    id;

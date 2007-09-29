@@ -79,7 +79,8 @@ public class XOverCommand extends Command
         Article art = Article.getByID(getCurrentGroup(), n);
         printTextPart(buildOverview(art, n) + NEWLINE);
       }
-      printText("");
+      println(".");
+      flush();
     }
     
     return true;

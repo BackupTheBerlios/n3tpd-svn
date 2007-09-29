@@ -47,7 +47,7 @@ public class Article
   private String                  filePath  = null;
   private HashMap<String, String> header    = null;
   private int                     id        = -1;
-  private String                  messageID;
+  //private String                  messageID;
   
   public Article()
   {
@@ -230,15 +230,19 @@ public class Article
     return null;
   }
 
-  public void generateMessageID()
+  /**
+   * Generates a message id for this article and sets it into
+   * the header HashMap.
+   */
+  private String generateMessageID()
   {
-    setMessageID("<" + UUID.randomUUID() + "@"
+    return this.header.put("Message-ID", "<" + UUID.randomUUID() + "@"
         + Config.getInstance().get("n3tpd.hostname") + ">");
   }
 
   /**
    * Tries to delete this article.
-   * @return
+   * @return false if the article could be deleted, otherwise true
    */
   public boolean delete()
   {
@@ -250,9 +254,12 @@ public class Article
   {
     String articleDir = filePath.substring(0, filePath.lastIndexOf(File.separator));
     
+    // Forces a MessageID creation if not existing
+    getMessageID();
+    
     // Check if the references are correct...
     String rep = header.get("In-Reply-To");
-    String ref = new String();
+    String ref = getMessageID();
     
     if(rep != null && !rep.equals(""))
     {
@@ -297,19 +304,10 @@ public class Article
 
   public String getMessageID()
   {
-    try
-    {
-      return header.get("Message-ID");
-    }
-    catch(NullPointerException e)
-    {
-      return messageID;
-    }
-  }
-
-  public void setMessageID(String messageId)
-  {
-    this.messageID = messageId;
+    String msgID = header.get("Message-ID");
+    if(msgID == null)
+      msgID = generateMessageID();
+    return msgID;
   }
 
   public HashMap<String, String> getHeader()
@@ -341,6 +339,6 @@ public class Article
   
   public String toString()
   {
-    return messageID;
+    return getMessageID();
   }
 }
