@@ -27,6 +27,11 @@ import java.util.Map;
 import n3tpd.NNTPConnection;
 import n3tpd.storage.Article;
 
+/**
+ * Class handling the ARTICLE command.
+ * @author Christian Lins
+ * @author Dennis Schwerdel
+ */
 public class ArticleCommand extends Command
 {
   public ArticleCommand(NNTPConnection connection)

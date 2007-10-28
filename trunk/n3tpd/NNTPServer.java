@@ -22,6 +22,11 @@ package n3tpd;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+/**
+ * Server component of the n3tpd.
+ * @author Christian Lins
+ * @author Dennis Schwerdel
+ */
 public class NNTPServer extends Thread
 {
   private ServerSocket socket;

@@ -24,6 +24,11 @@ import java.util.ArrayList;
 import n3tpd.NNTPConnection;
 import n3tpd.storage.Group;
 
+/**
+ * Class handling the LIST command.
+ * @author Christian Lins
+ * @author Dennis Schwerdel
+ */
 public class ListCommand extends Command
 {
   public ListCommand(NNTPConnection conn)

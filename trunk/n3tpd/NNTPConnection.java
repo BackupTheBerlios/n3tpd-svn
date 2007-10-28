@@ -38,6 +38,10 @@ import n3tpd.command.XOverCommand;
 import n3tpd.storage.Article;
 import n3tpd.storage.Group;
 
+/**
+ * Represents the connection between the server and one client.
+ * @author Christian Lins (christian.lins@web.de)
+ */
 public class NNTPConnection extends Thread
 {
   public static final String NEWLINE            = "\r\n";

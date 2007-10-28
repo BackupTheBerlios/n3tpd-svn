@@ -24,6 +24,11 @@ import n3tpd.NNTPConnection;
 import n3tpd.storage.Article;
 import n3tpd.storage.Group;
 
+/**
+ * Class handling the NEXT and LAST command.
+ * @author Christian Lins
+ * @author Dennis Schwerdel
+ */
 public class NextCommand extends Command
 {
   public NextCommand(NNTPConnection conn)

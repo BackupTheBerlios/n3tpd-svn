@@ -26,6 +26,11 @@ import n3tpd.NNTPConnection;
 import n3tpd.storage.Article;
 import n3tpd.storage.Group;
 
+/**
+ * Base class for all command handling classes.
+ * @author Christian Lins
+ * @author Dennis Schwerdel
+ */
 public abstract class Command
 {
   protected NNTPConnection connection;

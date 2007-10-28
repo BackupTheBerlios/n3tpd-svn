@@ -26,6 +26,10 @@ import java.util.Locale;
 import n3tpd.NNTPConnection;
 import n3tpd.storage.Article;
 
+/**
+ * Class handling the XOVER command.
+ * @author Christian Lins
+ */
 public class XOverCommand extends Command
 {
   public XOverCommand(NNTPConnection conn)

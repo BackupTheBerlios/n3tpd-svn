@@ -23,6 +23,11 @@ import java.io.IOException;
 import n3tpd.NNTPConnection;
 import n3tpd.storage.Group;
 
+/**
+ * Class handling the GROUP command.
+ * @author Christian Lins
+ * @author Dennis Schwerdel
+ */
 public class GroupCommand extends Command
 {
   public GroupCommand(NNTPConnection conn)
