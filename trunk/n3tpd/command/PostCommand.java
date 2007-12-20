@@ -115,9 +115,9 @@ public class PostCommand extends Command
     }
 
     // check for a cancel command
-    if ( header.containsKey("CONTROL") ) 
+    if ( header.containsKey("Control") ) 
     {
-      String[] control = header.get("CONTROL").split(" ") ;
+      String[] control = header.get("Control").split(" ") ;
       if ( control.length >= 2 && control[0].equalsIgnoreCase("cancel") ) 
       {
         // this article is a cancel-article, try to delete the old article
@@ -142,7 +142,7 @@ public class PostCommand extends Command
     header.put("Bytes", "" + bodySize);
 
     // if needed, set an empty references header
-    if (!header.containsKey("REFERENCES"))
+    if (!header.containsKey("References"))
       header.put("References", "");
 
     // try to create the article in the database
