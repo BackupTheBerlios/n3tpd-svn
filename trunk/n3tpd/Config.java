@@ -1,6 +1,6 @@
 /*
- *   Netvader NNTP Daemon (n3tpd)
- *   Copyright (C) 2007 by Christian Lins <christian.lins@web.de>
+ *   Neat NNTP Daemon (n3tpd)
+ *   Copyright (C) 2007, 2008 by Christian Lins <christian.lins@web.de>
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -39,10 +39,11 @@ public class Config
   
   static
   {
-    defaultConfig.setProperty("n3tpd.article.lifetime", "30"); // 30 days
+    defaultConfig.setProperty("n3tpd.article.lifetime", "300"); // 300 days
     defaultConfig.setProperty("n3tpd.article.maxsize", "100"); // 100 kbyte
     defaultConfig.setProperty("n3tpd.datadir", "data");
     defaultConfig.setProperty("n3tpd.port", "119");
+    defaultConfig.setProperty("n3tpd.auxport", "8080");
     defaultConfig.setProperty("n3tpd.server.backlog", "10");
     defaultConfig.setProperty("n3tpd.hostname", "localhost");
     

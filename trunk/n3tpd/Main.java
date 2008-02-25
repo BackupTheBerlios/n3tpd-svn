@@ -1,6 +1,6 @@
 /*
- *   Netvader NNTP Daemon (n3tpd)
- *   Copyright (C) 2007 by Christian Lins <christian.lins@web.de>
+ *   Neat NNTP Daemon (n3tpd)
+ *   Copyright (C) 2007, 2008 by Christian Lins <christian.lins@web.de>
  *   based on tnntpd (C) 2003 by Dennis Schwerdel
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -34,13 +34,30 @@ public class Main
 
   public static void main(String args[]) throws Exception
   {
+    System.out.println(VERSION);
+    System.out.println("Copyright (C) 2007, 2008 by Christian Lins <christian.lins@web.de>");
+    System.out.println("based on tnntpd (C) 2003 by Dennis Schwerdel");
+    
     // Checking configuration...
     File dataPath = new File(Config.getInstance().get("n3tpd.datadir"));
     if(!dataPath.exists())
       if(!dataPath.mkdir())
         throw new IOException("Could not create data directory!");
 
+    // Command line arguments
+    boolean auxPort = false;
+    
+    for(int n = 0; n < args.length; n++)
+    {
+      if(args[n].equals("--useaux"))
+        auxPort = true;
+    }
+    
     new Purger().start();
-    new NNTPDaemon().start();
+    new NNTPDaemon(false).start();
+    
+    // Start auxilary listening port...
+    if(auxPort)
+      new NNTPDaemon(true).start();
   }
 }

@@ -1,5 +1,5 @@
 /*
- *   Netvader NNTP Daemon (n3tpd)
+ *   Neat NNTP Daemon (n3tpd)
  *   Copyright (C) 2007, 2008 by Christian Lins <christian.lins@web.de>
  *   based on tnntpd (C) 2003 by Dennis Schwerdel
  *
@@ -31,16 +31,23 @@ public class NNTPDaemon extends Thread
 {
   private ServerSocket socket;
 
-  public NNTPDaemon() throws IOException
+  public NNTPDaemon(boolean aux) throws IOException
   {
-    int port    = Config.getInstance().get("n3tpd.port", 119);
+    int port; 
+    if(!aux)
+      port = Config.getInstance().get("n3tpd.port", 119);
+    else
+      port = Config.getInstance().get("n3tpd.auxport", 8080);
+    
     int backlog = Config.getInstance().get("n3tpd.server.backlog", 10);
     socket = new ServerSocket(port, backlog);
   }
 
   public void run()
   {
-    for(;;)
+    System.out.println("Daemon listening on port " + socket.getLocalPort() + " ...");
+    
+    while(isAlive() && !isInterrupted())
     {
       try
       {

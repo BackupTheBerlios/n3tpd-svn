@@ -1,6 +1,6 @@
 /*
- *   Netvader NNTP Daemon (n3tpd)
- *   Copyright (C) 2007 by Christian Lins <christian.lins@web.de>
+ *   Neat NNTP Daemon (n3tpd)
+ *   Copyright (C) 2007, 2008 by Christian Lins <christian.lins@web.de>
  *   based on tnntpd (C) 2003 by Dennis Schwerdel
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -112,7 +112,7 @@ public class Article
     }
     catch(Exception e)
     {
-      e.printStackTrace();
+      System.err.println(e.getLocalizedMessage());
       return null;
     }
   }
@@ -259,7 +259,7 @@ public class Article
     // Check if the references are correct...
     String rep = header.get("In-Reply-To");
     if(rep == null) // Some clients use only references instead of In-Reply-To
-      rep = header.get("References");
+      return; //rep = header.get("References");
     
     String ref = getMessageID();
     

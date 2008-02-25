@@ -1,6 +1,6 @@
 /*
- *   Netvader NNTP Daemon (n3tpd)
- *   Copyright (C) 2007 by Christian Lins <christian.lins@web.de>
+ *   Neat NNTP Daemon (n3tpd)
+ *   Copyright (C) 2007, 2008 by Christian Lins <christian.lins@web.de>
  *   based on tnntpd (C) 2003 by Dennis Schwerdel
  *
  *   This program is free software: you can redistribute it and/or modify
