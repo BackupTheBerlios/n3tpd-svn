@@ -39,7 +39,7 @@ public class Main
     System.out.println("based on tnntpd (C) 2003 by Dennis Schwerdel");
     
     // Checking configuration...
-    File dataPath = new File(Config.getInstance().get("n3tpd.datadir"));
+    File dataPath = new File(Config.getInstance().get("n3tpd.datadir", "."));
     if(!dataPath.exists())
       if(!dataPath.mkdir())
         throw new IOException("Could not create data directory!");

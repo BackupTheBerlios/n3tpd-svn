@@ -79,7 +79,7 @@ public class Purger extends Thread
   {
     Debug.getInstance().log("Purging old messages...");
 
-    String dataPath     = Config.getInstance().get("n3tpd.datadir");
+    String dataPath     = Config.getInstance().get("n3tpd.datadir", ".");
     File   dataPaFi     = new File(dataPath);
     long   timeTreshold = new Date().getTime() - this.interval;
 

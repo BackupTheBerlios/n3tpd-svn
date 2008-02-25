@@ -41,7 +41,7 @@ public class Group
   public Group(File path)
   {
     this.name = path.getAbsolutePath().substring(
-      new File(Config.getInstance().get("n3tpd.datadir")).getAbsolutePath().length() + 1);
+      new File(Config.getInstance().get("n3tpd.datadir", ".")).getAbsolutePath().length() + 1);
     this.name = this.name.replace(File.separatorChar, '.');
     this.path = path;
     
@@ -73,7 +73,7 @@ public class Group
   public static Group getByName(String name)
   {
     name = name.replace('.', File.separatorChar);
-    File dir = new File(Config.getInstance().get("n3tpd.datadir")
+    File dir = new File(Config.getInstance().get("n3tpd.datadir", ".")
         + File.separatorChar + name);
 
     if (dir.exists())
@@ -115,7 +115,7 @@ public class Group
   {
     ArrayList<Group> grpLst = new ArrayList<Group>();
 
-    File dataDir = new File(Config.getInstance().get("n3tpd.datadir"));
+    File dataDir = new File(Config.getInstance().get("n3tpd.datadir", "."));
     addSubGroups(grpLst, dataDir);
 
     return grpLst;

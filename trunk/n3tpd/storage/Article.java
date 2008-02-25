@@ -91,7 +91,7 @@ public class Article
   
   public static Article getByMessageID(String id)
   {
-    String path = Config.getInstance().get("n3tpd.datadir");
+    String path = Config.getInstance().get("n3tpd.datadir", ".");
     if(path == null)
       return null;
     
@@ -119,7 +119,7 @@ public class Article
 
   private void generateNewFileID()
   {
-    String path = Config.getInstance().get("n3tpd.datadir")
+    String path = Config.getInstance().get("n3tpd.datadir", ".")
       + File.separatorChar       
       + header.get("Newsgroups").replace('.', File.separatorChar) 
       + File.separatorChar;
@@ -197,7 +197,7 @@ public class Article
       generateNewFileID();
     
     String newsgroup = header.get("Newsgroups");
-    filePath = Config.getInstance().get("n3tpd.datadir") 
+    filePath = Config.getInstance().get("n3tpd.datadir", ".") 
       + File.separatorChar 
       + newsgroup.replace('.', File.separatorChar) 
       + File.separatorChar
@@ -236,7 +236,7 @@ public class Article
   private String generateMessageID()
   {
     return this.header.put("Message-ID", "<" + UUID.randomUUID() + "@"
-        + Config.getInstance().get("n3tpd.hostname") + ">");
+        + Config.getInstance().get("n3tpd.hostname", "localhost") + ">");
   }
 
   /**

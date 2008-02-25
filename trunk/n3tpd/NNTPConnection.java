@@ -53,7 +53,7 @@ public class NNTPConnection extends Thread
   private boolean            exit               = false;
   private BufferedWriter     out;
   private BufferedReader     in;
-  private File               articleDir         = new File(Config.getInstance().get("n3tpd.datadir"));
+  private File               articleDir         = new File(Config.getInstance().get("n3tpd.datadir", "."));
   private Article            currentArticle     = null;
   private Group              currentGroup       = null;
 
@@ -362,7 +362,7 @@ public class NNTPConnection extends Thread
 
     try
     {
-      printStatus(200, Config.getInstance().get("n3tpd.hostname")
+      printStatus(200, Config.getInstance().get("n3tpd.hostname", "localhost")
           + " " + Main.VERSION + " news server ready - (posting ok).");
     }
     catch (IOException e1)

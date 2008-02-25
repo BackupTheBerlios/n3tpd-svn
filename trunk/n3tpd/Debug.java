@@ -45,7 +45,7 @@ public class Debug
   {
     try
     {
-      String filename = Config.getInstance().get(Config.CONFIG_N3TPD_LOGFILE);
+      String filename = Config.getInstance().get(Config.CONFIG_N3TPD_LOGFILE, "n3tpd.log");
       
       this.out = new PrintStream(new FileOutputStream(filename));
     }

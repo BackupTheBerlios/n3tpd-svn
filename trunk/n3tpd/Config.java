@@ -130,7 +130,7 @@ public class Config
     }
   }
 
-  public String get(String key)
+  private String get(String key)
   {
     return settings.getProperty(key);
   }
