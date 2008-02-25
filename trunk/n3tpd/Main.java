@@ -41,6 +41,6 @@ public class Main
         throw new IOException("Could not create data directory!");
 
     new Purger().start();
-    new NNTPServer().start();
+    new NNTPDaemon().start();
   }
 }
