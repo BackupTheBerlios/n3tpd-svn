@@ -24,6 +24,7 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import n3tpd.Config;
+import n3tpd.Debug;
 
 /**
  * Represents a logical Group within this newsserver.
@@ -65,11 +66,11 @@ public class Group
     }
   }
 
-  public static Group getById(int id)
-  {
-    return null;
-  }
-
+  /**
+   * Returns a Group identified by its full name.
+   * @param name
+   * @return
+   */
   public static Group getByName(String name)
   {
     name = name.replace('.', File.separatorChar);
@@ -78,9 +79,11 @@ public class Group
 
     if (dir.exists())
       return new Group(dir);
-
-    System.err.println("Dir " + dir.getPath() + " does not exist!");
-    return null;
+    else
+    {
+      Debug.getInstance().log("Dir " + dir.getPath() + " does not exist!");
+      return null;
+    }
   }
 
   /**
@@ -131,20 +134,6 @@ public class Group
     return null;
   }
 
-  public static LinkedList<Group> getAll(int date)
-  {
-    return null;
-  }
-
-  public void addArticle(Article article)
-  {
-  }
-
-  public void create()
-  {
-
-  }
-
   /*****************************************************************************
    * Getters and Setters
    ****************************************************************************/
@@ -159,12 +148,12 @@ public class Group
     this.firstArticle = firstArticle;
   }
 
-  public int getId()
+  public int getID()
   {
     return id;
   }
 
-  public void setId(int id)
+  public void setID(int id)
   {
     this.id = id;
   }

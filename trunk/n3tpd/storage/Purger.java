@@ -44,6 +44,9 @@ public class Purger extends Thread
       this.interval = Integer.MAX_VALUE;
   }
   
+  /**
+   * Runloop of this PurgerThread class.
+   */
   public void run()
   {
     for(;;)
@@ -61,6 +64,12 @@ public class Purger extends Thread
     }
   }
   
+  /**
+   * Returns a Stack containing all storage files.
+   * TODO: On large amounts of data this can take inacceptable long!
+   * @param root
+   * @return
+   */
   private Stack<String> getAllFiles(File root)
   {
     Stack<String> all = new Stack<String>();
@@ -75,6 +84,10 @@ public class Purger extends Thread
     return all;
   }
 
+  /**
+   * Loops through all messages and deletes them if their time
+   * has come.
+   */
   private void purge()
   {
     Debug.getInstance().log("Purging old messages...");

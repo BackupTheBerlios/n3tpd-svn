@@ -30,7 +30,10 @@ import java.util.Properties;
  */
 public class Config
 {
+  /** The filename of the logfile */
   public static final String CONFIG_N3TPD_LOGFILE = "n3tpd.logfile";
+  
+  /** The filename of the config file that is loaded on startup */
   public static final String FILE                 = "n3tpd.conf";
 
   private static final Properties defaultConfig = new Properties();
@@ -39,8 +42,9 @@ public class Config
   
   static
   {
+    // Set some default values
     defaultConfig.setProperty("n3tpd.article.lifetime", "300"); // 300 days
-    defaultConfig.setProperty("n3tpd.article.maxsize", "100"); // 100 kbyte
+    defaultConfig.setProperty("n3tpd.article.maxsize", "100");  // 100 kbyte
     defaultConfig.setProperty("n3tpd.datadir", "data");
     defaultConfig.setProperty("n3tpd.port", "119");
     defaultConfig.setProperty("n3tpd.auxport", "8080");
@@ -50,17 +54,28 @@ public class Config
     instance = new Config();
   }
   
+  /**
+   * @return A Config instance
+   */
   public static Config getInstance()
   {
     return instance;
   }
 
-  private Properties settings = defaultConfig;
+  // Every config instance is initialized with the default values.
+  private Properties settings = (Properties)defaultConfig.clone();
 
+  /**
+   * Config is a singelton class with only one instance at time.
+   * So the constructor is private to prevent the creation of more
+   * then one Config instance.
+   * @see Config.getInstance() to retrieve an instance of Config
+   */
   private Config()
   {
     try
     {
+      // Load settings from file
       load();
     }
     catch(IOException e)
@@ -69,6 +84,12 @@ public class Config
     }
   }
 
+  /**
+   * Loads the configuration from the config file. By default this is done
+   * by the (private) constructor but it can be useful to reload the config
+   * by invoking this method.
+   * @throws IOException
+   */
   public void load() throws IOException
   {
     try
@@ -81,16 +102,26 @@ public class Config
     }
   }
 
+  /**
+   * Saves this Config to the config file. By default this is done
+   * at program end.
+   * @throws FileNotFoundException
+   * @throws IOException
+   */
   public void save() throws FileNotFoundException, IOException
   {
     settings.store(new FileOutputStream(FILE), "N3TPD Config File");
   }
-
-  public Properties get()
-  {
-    return settings;
-  }
   
+  /**
+   * Returns the value that is stored within this config
+   * identified by the given key. If the key cannot be found
+   * the default value is returned.
+   * @param key Key to identify the value.
+   * @param def The default value that is returned if the key
+   * is not found in this Config.
+   * @return
+   */
   public String get(String key, String def)
   {
     return settings.getProperty(key, def);
@@ -99,9 +130,10 @@ public class Config
   /**
    * Returns the value that is stored within this config
    * identified by the given key. If the key cannot be found
-   * the default value def is returned.
-   * @param key
-   * @param def
+   * the default value is returned.
+   * @param key Key to identify the value.
+   * @param def The default value that is returned if the key
+   * is not found in this Config.
    * @return
    */
   public int get(String key, int def)
@@ -116,7 +148,16 @@ public class Config
       return def;
     }
   }
-
+  
+  /**
+   * Returns the value that is stored within this config
+   * identified by the given key. If the key cannot be found
+   * the default value is returned.
+   * @param key Key to identify the value.
+   * @param def The default value that is returned if the key
+   * is not found in this Config.
+   * @return
+   */
   public long get(String key, long def)
   {
     try
@@ -130,11 +171,22 @@ public class Config
     }
   }
 
+  /**
+   * Returns the value for the given key or null if the
+   * key is not found in this Config.
+   * @param key
+   * @return
+   */
   private String get(String key)
   {
     return settings.getProperty(key);
   }
 
+  /**
+   * Sets the value for a given key.
+   * @param key
+   * @param value
+   */
   public void set(String key, String value)
   {
     settings.setProperty(key, value);

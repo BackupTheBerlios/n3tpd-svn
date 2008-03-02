@@ -62,10 +62,15 @@ public class NNTPConnection extends Thread
     this.socket = socket;
     this.in     = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     this.out    = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+    // TODO: The output stream should be of type PrintStream so that many
+    // of the printX() methods of this class can go to trash
     
     setDaemon(false);
   }
 
+  /**
+   * Closes the associated socket end exits the Thread.
+   */
   public void exit()
   {
     try
@@ -83,6 +88,9 @@ public class NNTPConnection extends Thread
    * Printing to the stream
    ****************************************************************************/
 
+  /**
+   * Prints a CharSequence to the sockets output stream.
+   */
   public void print(CharSequence s) throws IOException
   {
     out.append(s);
@@ -355,6 +363,10 @@ public class NNTPConnection extends Thread
       printStatus(501, "Command not supported");
   }
 
+  /**
+   * Runloop of this Thread.
+   * @throws RuntimeException if this method is called directly.
+   */
   public void run()
   {
     if (!this.equals(Thread.currentThread()))

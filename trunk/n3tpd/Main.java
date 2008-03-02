@@ -30,8 +30,14 @@ import n3tpd.storage.Purger;
  */
 public class Main
 {
-  public static final String VERSION = "n3tpd/0.2";
+  /** Version information of the n3tpd daemon */
+  public static final String VERSION = "n3tpd/0.3 SVN";
 
+  /**
+   * The main entrypoint.
+   * @param args
+   * @throws Exception
+   */
   public static void main(String args[]) throws Exception
   {
     System.out.println(VERSION);

@@ -31,6 +31,9 @@ public class Debug
 {
   private static Debug instance = null;
   
+  /**
+   * Returns the singelton instance of this class.
+   */
   public static Debug getInstance()
   {
     if(instance == null)
@@ -41,6 +44,10 @@ public class Debug
   
   private PrintStream out = System.err;
   
+  /**
+   * This class is a singelton class. The constructor is private to prevent
+   * the creation of more than one instance.
+   */
   private Debug()
   {
     try
@@ -55,16 +62,23 @@ public class Debug
     }
   }
   
+  /**
+   * Returns the debug output PrintStream. By default this is System.err.
+   */
   public PrintStream getStream()
   {
     return out;
   }
   
-  public void log(String msg)
+  /**
+   * Writes the given message to the debug output.
+   * @param msg A String message or an object.
+   */
+  public void log(Object msg)
   {
     out.print(new Date().toString());
     out.print(": ");
-    out.println(msg);
+    out.println(msg.toString());
     out.flush();
   }
 }
