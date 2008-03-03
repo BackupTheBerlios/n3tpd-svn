@@ -21,6 +21,10 @@ package n3tpd;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.util.Enumeration;
+
 import n3tpd.storage.Purger;
 
 /**
@@ -55,7 +59,15 @@ public class Main
     
     for(int n = 0; n < args.length; n++)
     {
-      if(args[n].equals("--useaux"))
+      if(args[n].equals("--dumpjdbcdriver"))
+      {
+        System.out.println("Available JDBC drivers:");
+        Enumeration<Driver> drvs =  DriverManager.getDrivers();
+        while(drvs.hasMoreElements())
+          System.out.println(drvs.nextElement());
+        return;
+      }
+      else if(args[n].equals("--useaux"))
         auxPort = true;
     }
     
