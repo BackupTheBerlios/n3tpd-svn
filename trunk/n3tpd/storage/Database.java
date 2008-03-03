@@ -19,9 +19,13 @@
 package n3tpd.storage;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import n3tpd.Config;
+import n3tpd.io.Resource;
 
 class Database
 {
@@ -29,13 +33,50 @@ class Database
   
   public static Database getInstance()
   {
-    if(instance == null)
-      instance = new Database();
-    
-    return instance;
+    try
+    {
+      if(instance == null)
+        instance = new Database();
+      
+      return instance;
+    }
+    catch(Exception ex)
+    {
+      ex.printStackTrace();
+      return null;
+    }
   }
   
   private Connection conn;
+  
+  private Database()
+    throws Exception
+  {
+    Class.forName("org.hsqldb.jdbcDriver");
+    
+    String path = Config.getInstance().get("n3tpd.datadir", "data/");
+    this.conn = DriverManager.getConnection("jdbc:hsqldb:file:" + path);
+    
+    checkTables();
+  }
+  
+  /**
+   * Check if all necessary tables are existing.
+   */
+  private void checkTables()
+  {
+    try
+    {
+      String sql = Resource.getAsString("helpers/database.sql", false);
+      Statement stmt = conn.createStatement();
+      stmt.execute(sql);
+    }
+    catch(Exception ex)
+    {
+      // Silently ignore the exception if the tables already exist.
+      //ex.printStackTrace();
+    }
+  }
   
   public void delete(Article article)
   {
@@ -52,9 +93,9 @@ class Database
   {
     Statement stmt = conn.createStatement();
     ResultSet rs =
-      stmt.executeQuery("SELECT * FROM News WHERE MessageID = '" + messageID + "'");
+      stmt.executeQuery("SELECT * FROM Articles WHERE MessageID = '" + messageID + "'");
     
-    return new Article();
+    return new Article(rs);
   }
   
   public ResultSet getGroups()
@@ -71,9 +112,12 @@ class Database
   {
     Statement stmt = conn.createStatement();
     ResultSet rs = 
-      stmt.executeQuery("SELECT * FROM News WHERE Date = (SELECT Min(Date) FROM News");
+      stmt.executeQuery("SELECT * FROM Articles WHERE Date = (SELECT Min(Date) FROM Articles)");
     
-    return new Article();
+    if(rs.next())
+      return new Article(rs);
+    else
+      return null;
   }
   
   public void setArticle(Article article)

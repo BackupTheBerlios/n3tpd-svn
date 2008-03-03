@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
@@ -57,24 +58,33 @@ public class Article
     }
   }
   
-  private String                  body;
+  public static Article getByID(Group group, int id)
+  {
+    return null;
+  }
+  
+  private String                  body      = null;
   private String                  filePath  = null;
   private HashMap<String, String> header    = null;
   private int                     id        = -1;
   
   public Article()
   {
+    
   }
   
-  public Article(String filePath)
+  /**
+   * Creates a new Article object using the date from the given
+   * ResultSet. It is expected that ResultSet.next() was already
+   * called by the Database class.
+   * @param rs
+   */
+  public Article(ResultSet rs)
+    throws SQLException
   {
-    this.filePath = filePath;
+    this.body = rs.getString("Body");
   }
 
-  public static Article getByID(Group group, int id)
-  {
-    return null;
-  }
 
   private void generateNewFileID()
   {

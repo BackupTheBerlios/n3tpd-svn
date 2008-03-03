@@ -75,6 +75,9 @@ public class Purger extends Thread
       for(;;)
       {
         Article art = Database.getInstance().getOldestArticle();
+        if(art == null) // No articles in the database
+          break;
+        
         if(art.getDate().getTime() < (new Date().getTime() + this.interval))
         {
           Database.getInstance().delete(art);

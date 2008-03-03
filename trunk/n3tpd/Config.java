@@ -45,7 +45,7 @@ public class Config
     // Set some default values
     defaultConfig.setProperty("n3tpd.article.lifetime", "300"); // 300 days
     defaultConfig.setProperty("n3tpd.article.maxsize", "100");  // 100 kbyte
-    defaultConfig.setProperty("n3tpd.datadir", "data");
+    defaultConfig.setProperty("n3tpd.datadir", "data/");
     defaultConfig.setProperty("n3tpd.port", "119");
     defaultConfig.setProperty("n3tpd.auxport", "8080");
     defaultConfig.setProperty("n3tpd.server.backlog", "10");
