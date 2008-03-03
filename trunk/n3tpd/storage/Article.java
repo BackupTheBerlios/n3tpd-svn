@@ -24,14 +24,15 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 import java.util.UUID;
+
 import n3tpd.Config;
 import n3tpd.Debug;
 import n3tpd.NNTPConnection;
@@ -43,6 +44,19 @@ import n3tpd.NNTPConnection;
  */
 public class Article
 {
+  public static Article getByMessageID(String messageID)
+  {
+    try
+    {
+      return Database.getInstance().getArticle(messageID);
+    }
+    catch(SQLException ex)
+    {
+      ex.printStackTrace();
+      return null;
+    }
+  }
+  
   private String                  body;
   private String                  filePath  = null;
   private HashMap<String, String> header    = null;
@@ -56,65 +70,10 @@ public class Article
   {
     this.filePath = filePath;
   }
-  
-  public static Article getByMessageID(String id, String path)
-  {
-    Stack<File> stack = new Stack<File>();
-    stack.push(new File(path));
-    
-    while(!stack.empty())
-    {
-      File file = stack.pop();
-      if(file.isDirectory())
-      {
-        for(File f : file.listFiles())
-          stack.push(f);
-      }
-      else
-      {
-        try
-        {
-          Article art = new Article(file.getAbsolutePath());
-          art.loadFromFile();
-          if(art.getMessageID().equals(id))
-            return art;
-        }
-        catch(IOException e)
-        {
-          e.printStackTrace();
-        }
-      }
-    }
-    
-    return null;
-  }
-  
-  public static Article getByMessageID(String id)
-  {
-    String path = Config.getInstance().get("n3tpd.datadir", ".");
-    if(path == null)
-      return null;
-    
-    return getByMessageID(id, path);
-  }
 
   public static Article getByID(Group group, int id)
   {
-    try
-    {
-      String path = group.getPath()
-        + File.separatorChar + id + ".news";
-      Article art = new Article(path);
-      art.setID(id);
-      art.loadFromFile();
-      
-      return art;
-    }
-    catch(Exception e)
-    {
-      System.err.println(e.getLocalizedMessage());
-      return null;
-    }
+    return null;
   }
 
   private void generateNewFileID()
@@ -265,7 +224,7 @@ public class Article
     
     if(rep != null && !rep.equals(""))
     {
-      Article art = getByMessageID(rep, articleDir);
+      Article art = null; //TODO // getByMessageID(rep, articleDir);
       if(art != null)
       {
         ref = art.getHeader().get("References") + " " + rep;

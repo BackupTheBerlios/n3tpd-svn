@@ -18,10 +18,8 @@
 
 package n3tpd.storage;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Date;
-import java.util.Stack;
+
 import n3tpd.Config;
 import n3tpd.Debug;
 
@@ -63,26 +61,6 @@ public class Purger extends Thread
       }
     }
   }
-  
-  /**
-   * Returns a Stack containing all storage files.
-   * TODO: On large amounts of data this can take inacceptable long!
-   * @param root
-   * @return
-   */
-  private Stack<String> getAllFiles(File root)
-  {
-    Stack<String> all = new Stack<String>();
-    for(File file : root.listFiles())
-    {
-      if(file.isDirectory())
-        all.addAll(getAllFiles(file));
-      else
-        all.push(file.getAbsolutePath());
-    }
-
-    return all;
-  }
 
   /**
    * Loops through all messages and deletes them if their time
@@ -92,31 +70,23 @@ public class Purger extends Thread
   {
     Debug.getInstance().log("Purging old messages...");
 
-    String dataPath     = Config.getInstance().get("n3tpd.datadir", ".");
-    File   dataPaFi     = new File(dataPath);
-    long   timeTreshold = new Date().getTime() - this.interval;
-
-    Stack<String> allFiles = getAllFiles(dataPaFi);
-    while(!allFiles.isEmpty())
+    try
     {
-      try
+      for(;;)
       {
-        String  path = allFiles.pop();
-        Article art  = new Article(path);
-        art.loadFromFile();
-        
-        // Check date
-        if(art.getDate().getTime() < timeTreshold)
+        Article art = Database.getInstance().getOldestArticle();
+        if(art.getDate().getTime() < (new Date().getTime() + this.interval))
         {
-          Debug.getInstance().log("Deleting " + art);
-          if(!art.delete())
-            Debug.getInstance().log("Deletion of " + art + " failed!");
+          Database.getInstance().delete(art);
+          Debug.getInstance().log("Deleted: " + art);
         }
+        else
+          break;
       }
-      catch(IOException e)
-      {
-        e.printStackTrace(Debug.getInstance().getStream());
-      }
+    }
+    catch(Exception ex)
+    {
+      ex.printStackTrace();
     }
   }
 }

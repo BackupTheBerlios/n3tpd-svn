@@ -5,7 +5,7 @@
 JAVA=/usr/bin/java
 JARFILE=n3tpd.jar
 LOGFILE=n3tpd.log
-PIDFILE=n3tpd.jar
+PIDFILE=n3tpd.pid
 
 case "$1" in
      start)

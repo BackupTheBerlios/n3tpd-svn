@@ -21,8 +21,11 @@ package n3tpd.storage;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+
 import n3tpd.Config;
 import n3tpd.Debug;
 
@@ -34,38 +37,15 @@ public class Group
 {
   private int    id;
   private String name;
-  private File   path;
 
   private int    firstArticle = Integer.MAX_VALUE;
   private int    lastArticle  = 0;
 
-  public Group(File path)
+  private Group(String name)
   {
-    this.name = path.getAbsolutePath().substring(
-      new File(Config.getInstance().get("n3tpd.datadir", ".")).getAbsolutePath().length() + 1);
-    this.name = this.name.replace(File.separatorChar, '.');
-    this.path = path;
     
-    if(this.path.exists())
-    {
-      File[] articles = path.listFiles(new FileFilter()
-        {
-          public boolean accept(File f)
-          {
-            return f.getName().endsWith(".news");
-          }
-        });
-      for(File a : articles)
-      {
-        int n = Integer.parseInt(a.getName().replaceAll(".news", ""));
-        if(n > lastArticle)
-          lastArticle = n;
-        if(n < firstArticle)
-          firstArticle = n;
-      }
-    }
   }
-
+  
   /**
    * Returns a Group identified by its full name.
    * @param name
@@ -73,41 +53,7 @@ public class Group
    */
   public static Group getByName(String name)
   {
-    name = name.replace('.', File.separatorChar);
-    File dir = new File(Config.getInstance().get("n3tpd.datadir", ".")
-        + File.separatorChar + name);
-
-    if (dir.exists())
-      return new Group(dir);
-    else
-    {
-      Debug.getInstance().log("Dir " + dir.getPath() + " does not exist!");
-      return null;
-    }
-  }
-
-  /**
-   * Recursive method that adds all directories to an ArrayList that either
-   * have files or no subdirectories.
-   * @param lst
-   * @param g
-   */
-  private static void addSubGroups(ArrayList<Group> lst, File g)
-  {
-    File[] groups = g.listFiles(new FileFilter()
-    {
-      public boolean accept(File f)
-      {
-        return f.isDirectory();
-      }
-    });
-
-    //  Check if this is only an empty dir
-    if(groups.length == 0 || g.list().length - groups.length > 0)
-      lst.add(new Group(g));
-    
-    for (File f : groups)
-      addSubGroups(lst, f);
+    return new Group(name);
   }
 
   /**
@@ -116,12 +62,18 @@ public class Group
    */
   public static ArrayList<Group> getAll()
   {
-    ArrayList<Group> grpLst = new ArrayList<Group>();
-
-    File dataDir = new File(Config.getInstance().get("n3tpd.datadir", "."));
-    addSubGroups(grpLst, dataDir);
-
-    return grpLst;
+    ArrayList<Group> buffer = new ArrayList<Group>();
+    
+    try
+    {
+      ResultSet raw = Database.getInstance().getGroups();
+    }
+    catch(SQLException ex)
+    {
+      ex.printStackTrace();
+    }
+    
+    return buffer;
   }
 
   public LinkedList<Article> getAllArticles()
@@ -185,8 +137,4 @@ public class Group
     return getLastArticle() - getFirstArticle() + 1;
   }
 
-  public String getPath()
-  {
-    return this.path.getAbsolutePath();
-  }
 }
