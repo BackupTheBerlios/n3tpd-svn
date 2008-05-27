@@ -1,8 +1,9 @@
 CREATE TABLE Groups 
 (
-    ID 		integer NOT NULL,
+    ID    integer NOT NULL,
     Name 	varchar(255) NOT NULL,
     
+    UNIQUE(Name),
     PRIMARY KEY(ID)
 );
 
@@ -10,7 +11,7 @@ CREATE TABLE Articles
 (
     Body			varchar NOT NULL,
     Date 			timestamp NOT NULL,
-    GroupID			integer,
+    GroupID         integer,
     MessageID 		varchar(255) NOT NULL,
     NumberInGroup   integer,
     

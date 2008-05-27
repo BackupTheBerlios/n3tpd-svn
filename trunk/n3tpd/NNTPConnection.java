@@ -65,7 +65,7 @@ public class NNTPConnection extends Thread
     // TODO: The output stream should be of type PrintStream so that many
     // of the printX() methods of this class can go to trash
     
-    setDaemon(false);
+    setDaemon(true); // Exits if the main thread is killed
   }
 
   /**
@@ -367,10 +367,10 @@ public class NNTPConnection extends Thread
    * Runloop of this Thread.
    * @throws RuntimeException if this method is called directly.
    */
+  @Override
   public void run()
   {
-    if (!this.equals(Thread.currentThread()))
-      throw new RuntimeException("Do not call run() directly !");
+    assert !this.equals(Thread.currentThread());
 
     try
     {

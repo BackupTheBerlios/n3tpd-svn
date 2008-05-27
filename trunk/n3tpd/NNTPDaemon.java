@@ -20,6 +20,7 @@
 package n3tpd;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.ServerSocket;
 
 /**
@@ -40,9 +41,12 @@ public class NNTPDaemon extends Thread
       port = Config.getInstance().get("n3tpd.auxport", 8080);
     
     int backlog = Config.getInstance().get("n3tpd.server.backlog", 10);
+    
+    // Create and bind the socket
     socket = new ServerSocket(port, backlog);
   }
 
+  @Override
   public void run()
   {
     System.out.println("Daemon listening on port " + socket.getLocalPort() + " ...");

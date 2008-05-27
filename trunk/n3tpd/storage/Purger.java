@@ -34,7 +34,7 @@ public class Purger extends Thread
   
   public Purger()
   {
-    setDaemon(false);
+    setDaemon(true); // Daemons run only along with the main thread
     setPriority(Thread.MIN_PRIORITY);
 
     this.interval = Config.getInstance().get("n3tpd.article.lifetime", 30) * 24 * 60 * 60 * 1000; // Milliseconds
@@ -45,6 +45,7 @@ public class Purger extends Thread
   /**
    * Runloop of this PurgerThread class.
    */
+  @Override
   public void run()
   {
     for(;;)

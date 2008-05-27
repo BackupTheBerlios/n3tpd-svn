@@ -21,10 +21,15 @@ package n3tpd;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.BindException;
+
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Enumeration;
 
+import n3tpd.inspector.InspectorFrame;
+import n3tpd.storage.Database;
+import n3tpd.storage.GroupList;
 import n3tpd.storage.Purger;
 
 /**
@@ -67,12 +72,45 @@ public class Main
           System.out.println(drvs.nextElement());
         return;
       }
+      else if(args[n].equals("--inspector"))
+      {
+        new InspectorFrame().setVisible(true);
+      }
       else if(args[n].equals("--useaux"))
         auxPort = true;
     }
     
+    // Try to load the Database
+    try
+    {
+      Database.arise();
+    }
+    catch(Exception ex)
+    {
+      ex.printStackTrace(Debug.getInstance().getStream());
+      System.err.println("Database initialization failed with " + ex.toString());
+      
+      return;
+    }
+    
+    // Load the groups.list file
+    GroupList.arise();
+    
+    // Start the n3tpd garbage collector
     new Purger().start();
-    new NNTPDaemon(false).start();
+    
+    // Start the listening daemon
+    try
+    {
+      new NNTPDaemon(false).start();
+    }
+    catch(BindException ex)
+    {
+      ex.printStackTrace(Debug.getInstance().getStream());
+      System.err.println("Could not bind to interface. Perhaps you need superuser rights?");
+
+      return;
+    }
     
     // Start auxilary listening port...
     if(auxPort)

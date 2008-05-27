@@ -24,20 +24,27 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import java.util.zip.CRC32;
 import n3tpd.Config;
 import n3tpd.io.Resource;
 
-class Database
+public class Database
 {
   private static Database instance = null;
+  
+  public static void arise()
+    throws Exception
+  {
+    // Tries to load the Database driver and establish a connection.
+    if(instance == null)
+      instance = new Database();
+  }
   
   public static Database getInstance()
   {
     try
     {
-      if(instance == null)
-        instance = new Database();
-      
+      arise();
       return instance;
     }
     catch(Exception ex)
@@ -58,6 +65,23 @@ class Database
     this.conn = DriverManager.getConnection("jdbc:hsqldb:file:" + path);
     
     checkTables();
+  }
+  
+  /**
+   * Adds a group to the Database.
+   * @param name
+   * @throws java.sql.SQLException
+   */
+  public boolean addGroup(String name)
+    throws SQLException
+  {
+    CRC32 crc = new CRC32();
+    crc.update(name.getBytes());
+    
+    long id = crc.getValue();
+    
+    Statement stmt = conn.createStatement();
+    return 1 == stmt.executeUpdate("INSERT INTO Groups (ID, Name) VALUES (" + id + ", '" + name + "'");
   }
   
   /**
@@ -98,6 +122,11 @@ class Database
     return new Article(rs);
   }
   
+  /**
+   * 
+   * @return
+   * @throws java.sql.SQLException
+   */
   public ResultSet getGroups()
     throws SQLException
   {
@@ -105,6 +134,26 @@ class Database
     ResultSet rs = stmt.executeQuery("SELECT * FROM Groups");
     
     return rs;
+  }
+  
+  /**
+   * Returns a group name identified by the given id.
+   * @param id
+   * @return
+   * @throws java.sql.SQLException
+   */
+  public String getGroup(int id)
+    throws SQLException
+  {
+    Statement stmt = conn.createStatement();
+    ResultSet rs   = stmt.executeQuery("SELECT Name FROM Groups WHERE ID = " + id);
+    
+    if(rs.next())
+    {
+      return rs.getString(0);
+    }
+    else
+      return null;
   }
   
   public Article getOldestArticle()
@@ -118,6 +167,21 @@ class Database
       return new Article(rs);
     else
       return null;
+  }
+  
+  /**
+   * Checks if there is a group with the given name in the Database.
+   * @param name
+   * @return
+   * @throws java.sql.SQLException
+   */
+  public boolean isGroupExisting(String name)
+    throws SQLException
+  {
+    Statement stmt = this.conn.createStatement();
+    ResultSet rs   = stmt.executeQuery("SELECT * FROM Groups WHERE Name = '" + name + "'");
+    
+    return rs.next();
   }
   
   public void setArticle(Article article)
