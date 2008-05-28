@@ -164,11 +164,21 @@ public class Database
     return rs;
   }
   
+  /**
+   * Returns the Group that is identified by the name.
+   * @param name
+   * @return
+   * @throws java.sql.SQLException
+   */
   public Group getGroup(String name)
     throws SQLException
-  {
+  {   
     Statement stmt = this.conn.createStatement();
-    ResultSet rs = stmt.executeQuery("SELECT ID FROM Groups WHERE Name = '" + name + "'");
+    String sql = "SELECT ID FROM Groups WHERE Name = '%name'";
+    StringTemplate tmpl = new StringTemplate(sql);
+    tmpl.set("name", name);
+    
+    ResultSet rs = stmt.executeQuery(tmpl.toString());
   
     if(!rs.next())
       return null;

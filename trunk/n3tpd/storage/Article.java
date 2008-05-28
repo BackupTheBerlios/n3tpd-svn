@@ -166,15 +166,15 @@ public class Article
       String   newsgroups = this.header.get("Newsgroups");
       if(newsgroups != null)
       {
-        String[] newsgroup  = newsgroups.split(newsgroups);
+        String[] newsgroup  = newsgroups.split(",");
         // Crossposting is not supported
         try
         {
           Group group;
           if(newsgroup.length > 0)
-            group = Database.getInstance().getGroup(newsgroup[0]);
+            group = Database.getInstance().getGroup(newsgroup[0].trim());
           else
-            group = Database.getInstance().getGroup(newsgroups);
+            group = Database.getInstance().getGroup(newsgroups.trim());
           // TODO: What to do if Group does not exist?
           this.groupID = group.getID();
         }

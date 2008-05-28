@@ -19,7 +19,3 @@ CREATE TABLE Articles
 
   PRIMARY KEY(MessageID)
 );
-
-CREATE TABLE ArticleReferences
-(
-);
