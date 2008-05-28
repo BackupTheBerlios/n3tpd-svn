@@ -54,6 +54,13 @@ public class InspectorFrame extends javax.swing.JFrame {
       {
         ((DefaultListModel)lstGroups.getModel()).addElement(rs.getString("Name"));
       }
+      
+      // Load articles from the database
+      rs = db.getArticles();
+      while(rs.next())
+      {
+        ((DefaultListModel)lstArticles.getModel()).addElement(rs.getString("Subject"));
+      }
     }
     catch(Exception ex)
     {

@@ -170,7 +170,11 @@ public class Article
         // Crossposting is not supported
         try
         {
-          Group group = Database.getInstance().getGroup(newsgroup[0]);
+          Group group;
+          if(newsgroup.length > 0)
+            group = Database.getInstance().getGroup(newsgroup[0]);
+          else
+            group = Database.getInstance().getGroup(newsgroups);
           // TODO: What to do if Group does not exist?
           this.groupID = group.getID();
         }

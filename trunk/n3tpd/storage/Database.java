@@ -28,6 +28,7 @@ import java.sql.Statement;
 import java.util.zip.CRC32;
 import n3tpd.Config;
 import n3tpd.io.Resource;
+import n3tpd.util.StringTemplate;
 
 public class Database
 {
@@ -72,16 +73,19 @@ public class Database
     throws SQLException
   {
     Statement stmt = this.conn.createStatement();
-    String sql = "INSERT INTO Articles " +
-            "(Body, Date, GroupID, MessageID, NumberInGroup) " +
-            "VALUES (" + 
-            "'" + article.getBody() + "', " + 
-            new Date().getTime() + "," +
-            article.getGroupID() + "," +
-            article.getMessageID() + ", " +
-            article.getNumberInGroup()
-            + ")";
-    return 1 == stmt.executeUpdate(sql);
+
+    String sql = "INSERT INTO Articles (Body,Date,GroupID,MessageID,NumberInGroup,Subject)" +
+            "VALUES('%body',%date,%gid,'%mid',%nig,'%subject')";
+    
+    StringTemplate tmpl = new StringTemplate(sql);
+    tmpl.set("body", article.getBody());
+    tmpl.set("date", new Date().getTime());
+    tmpl.set("gid", article.getGroupID());
+    tmpl.set("mid", article.getMessageID());
+    tmpl.set("nig", article.getNumberInGroup());
+    tmpl.set("subject", article.getHeader().get("Subject"));
+    
+    return 1 == stmt.executeUpdate(tmpl.toString());
   }
   
   /**
@@ -115,7 +119,7 @@ public class Database
     catch(Exception ex)
     {
       // Silently ignore the exception if the tables already exist.
-      //ex.printStackTrace();
+      ex.printStackTrace();
     }
   }
   
@@ -137,6 +141,13 @@ public class Database
       stmt.executeQuery("SELECT * FROM Articles WHERE MessageID = '" + messageID + "'");
     
     return new Article(rs);
+  }
+  
+  public ResultSet getArticles()
+    throws SQLException
+  {
+    Statement stmt = conn.createStatement();
+    return stmt.executeQuery("SELECT * FROM Articles");
   }
   
   /**
