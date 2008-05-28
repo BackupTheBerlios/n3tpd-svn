@@ -22,7 +22,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
-import java.util.zip.CRC32;
+
 import n3tpd.Debug;
 
 /**

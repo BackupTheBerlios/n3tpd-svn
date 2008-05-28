@@ -45,11 +45,14 @@ public class InspectorFrame extends javax.swing.JFrame {
     {
       Database db = Database.getInstance();
       
+      lstGroups.setModel(new DefaultListModel());
+      lstArticles.setModel(new DefaultListModel());
+      
       // Load the groups from the database
       ResultSet rs = db.getGroups();
       while(rs.next())
       {
-        ((DefaultListModel)lstGroups.getModel()).addElement(rs.getString(0));
+        ((DefaultListModel)lstGroups.getModel()).addElement(rs.getString("Name"));
       }
     }
     catch(Exception ex)
@@ -71,6 +74,10 @@ public class InspectorFrame extends javax.swing.JFrame {
     lstGroupsScrollPane = new javax.swing.JScrollPane();
     lstGroups = new javax.swing.JList();
     btnRefreshGroupList = new javax.swing.JButton();
+    tabArticle = new javax.swing.JPanel();
+    jScrollPane1 = new javax.swing.JScrollPane();
+    lstArticles = new javax.swing.JList();
+    btnRefreshArticleList = new javax.swing.JButton();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -107,6 +114,39 @@ public class InspectorFrame extends javax.swing.JFrame {
 
     tabbedPane.addTab("Groups", tabGroups);
 
+    lstArticles.setModel(new DefaultListModel());
+    jScrollPane1.setViewportView(lstArticles);
+
+    btnRefreshArticleList.setText("Refresh");
+    btnRefreshArticleList.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnRefreshArticleListActionPerformed(evt);
+      }
+    });
+
+    javax.swing.GroupLayout tabArticleLayout = new javax.swing.GroupLayout(tabArticle);
+    tabArticle.setLayout(tabArticleLayout);
+    tabArticleLayout.setHorizontalGroup(
+      tabArticleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tabArticleLayout.createSequentialGroup()
+        .addContainerGap()
+        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+        .addGap(18, 18, 18)
+        .addComponent(btnRefreshArticleList)
+        .addContainerGap())
+    );
+    tabArticleLayout.setVerticalGroup(
+      tabArticleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(tabArticleLayout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(tabArticleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
+          .addComponent(btnRefreshArticleList))
+        .addContainerGap())
+    );
+
+    tabbedPane.addTab("Articles", tabArticle);
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
@@ -124,6 +164,10 @@ public class InspectorFrame extends javax.swing.JFrame {
   private void btnRefreshGroupListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshGroupListActionPerformed
     updateData();
   }//GEN-LAST:event_btnRefreshGroupListActionPerformed
+
+  private void btnRefreshArticleListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshArticleListActionPerformed
+    updateData();
+  }//GEN-LAST:event_btnRefreshArticleListActionPerformed
   
   /**
    * @param args the command line arguments
@@ -137,9 +181,13 @@ public class InspectorFrame extends javax.swing.JFrame {
   }
   
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JButton btnRefreshArticleList;
   private javax.swing.JButton btnRefreshGroupList;
+  private javax.swing.JScrollPane jScrollPane1;
+  private javax.swing.JList lstArticles;
   private javax.swing.JList lstGroups;
   private javax.swing.JScrollPane lstGroupsScrollPane;
+  private javax.swing.JPanel tabArticle;
   private javax.swing.JPanel tabGroups;
   private javax.swing.JTabbedPane tabbedPane;
   // End of variables declaration//GEN-END:variables

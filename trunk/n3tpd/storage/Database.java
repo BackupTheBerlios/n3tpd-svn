@@ -81,7 +81,7 @@ public class Database
     long id = crc.getValue();
     
     Statement stmt = conn.createStatement();
-    return 1 == stmt.executeUpdate("INSERT INTO Groups (ID, Name) VALUES (" + id + ", '" + name + "'");
+    return 1 == stmt.executeUpdate("INSERT INTO Groups (ID, Name) VALUES (" + id + ", '" + name + "')");
   }
   
   /**
@@ -150,7 +150,7 @@ public class Database
     
     if(rs.next())
     {
-      return rs.getString(0);
+      return rs.getString(1);
     }
     else
       return null;
