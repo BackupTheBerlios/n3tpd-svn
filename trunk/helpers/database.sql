@@ -7,17 +7,17 @@ CREATE TABLE Groups
     PRIMARY KEY(ID)
 );
 
-CREATE TABLE Articles
+CREATE TABLE Articles 
 (
-    Body			varchar NOT NULL,
-    Date 			bigint NOT NULL,
-    Sender          varchar(255),
-    GroupID         integer,
-    MessageID 		varchar(255) NOT NULL,
-    NumberInGroup   integer,
-    Subject         varchar(255),
-    
-    PRIMARY KEY(MessageID)
+  Body      VARCHAR NOT NULL ,
+  Date      BIGINT NOT NULL ,
+  Sender    VARCHAR( 255 ) NOT NULL ,
+  GroupID   BIGINT NOT NULL ,
+  MessageID VARCHAR( 255 ) NOT NULL ,
+  NumberInGroup INT NOT NULL ,
+  Subject   VARCHAR( 255 ) NOT NULL,
+
+  PRIMARY KEY(MessageID)
 );
 
 CREATE TABLE ArticleReferences
