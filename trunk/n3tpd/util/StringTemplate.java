@@ -18,11 +18,60 @@
 
 package n3tpd.util;
 
+import java.util.HashMap;
+
 /**
  *
- * @author chris
+ * @author Christian Lins (christian.lins@web.de)
  */
 public class StringTemplate 
 {
-
+  private String                  str               = null;
+  private String                  templateDelimiter = "%";
+  private HashMap<String, String> templateValues    = new HashMap<String, String>();
+  
+  public StringTemplate(String str, String templateDelimiter)
+  {
+    this.str               = str;
+    this.templateDelimiter = templateDelimiter;
+  }
+  
+  public StringTemplate(String str)
+  {
+    this(str, "%");
+  }
+  
+  public void set(String template, String value)
+  {
+    this.templateValues.put(template, value);
+  }
+  
+  public void set(String template, long value)
+  {
+    set(template, Long.toString(value));
+  }
+  
+  public void set(String template, double value)
+  {
+    set(template, Double.toString(value));
+  }
+  
+  public void set(String template, Object obj)
+  {
+    set(template, obj.toString());
+  }
+  
+  @Override
+  public String toString()
+  {
+    String ret = new String(str);
+    
+    for(String key : this.templateValues.keySet())
+    {
+      String value = this.templateValues.get(key);
+      ret = ret.replace(templateDelimiter + key, value);
+    }
+    
+    return ret;
+  }
 }
