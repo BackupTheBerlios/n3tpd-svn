@@ -83,7 +83,7 @@ public class XOverCommand extends Command
       printStatus(224, "Overview information follows");
       for(int n = artStart; n <= artEnd; n++)
       {
-        Article art = Article.getByID(getCurrentGroup(), n);
+        Article art = Article.getByNumberInGroup(getCurrentGroup(), n);
         printTextPart(buildOverview(art, n) + NEWLINE);
       }
       println(".");

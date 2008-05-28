@@ -58,7 +58,7 @@ public class NextCommand extends Command
     Article article;
     if (commandName.equalsIgnoreCase("NEXT"))
     {
-      article = currA.nextArticleInGroup(currG);
+      article = currA.nextArticleInGroup();
       if (article == null)
       {
         printStatus(421, "no next article in this group");
@@ -67,7 +67,7 @@ public class NextCommand extends Command
     }
     else
     {
-      article = currA.prevArticleInGroup(currG);
+      article = currA.prevArticleInGroup();
       if (article == null)
       {
         printStatus(422, "no previous article in this group");
@@ -75,7 +75,7 @@ public class NextCommand extends Command
       }
     }
     setCurrentArticle(article);
-    printStatus(223, article.getID() + " " + article.getMessageID()
+    printStatus(223, article.getNumberInGroup() + " " + article.getMessageID()
         + " article retrieved - request text separately");
     return true;
   }

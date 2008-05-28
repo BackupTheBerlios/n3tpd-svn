@@ -62,7 +62,7 @@ public class ListGroupCommand extends Command
     // RFC
     for (Article a : list)
     {
-      printTextLine("" + a.getID());
+      printTextLine("" + a.getNumberInGroup());
     }
     println(".");
     flush();

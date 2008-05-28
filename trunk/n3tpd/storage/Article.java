@@ -19,24 +19,14 @@
 
 package n3tpd.storage;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import n3tpd.Config;
 import n3tpd.Debug;
-import n3tpd.NNTPConnection;
 
 /**
  * Represents a newsgroup article.
@@ -45,6 +35,11 @@ import n3tpd.NNTPConnection;
  */
 public class Article
 {
+  /**
+   * Loads the Article identified by the given ID from the Database.
+   * @param messageID
+   * @return null if Article is not found or if an error occurred.
+   */
   public static Article getByMessageID(String messageID)
   {
     try
@@ -53,24 +48,27 @@ public class Article
     }
     catch(SQLException ex)
     {
-      ex.printStackTrace();
+      ex.printStackTrace(Debug.getInstance().getStream());
       return null;
     }
   }
   
-  public static Article getByID(Group group, int id)
+  public static Article getByNumberInGroup(Group group, int number)
   {
     return null;
   }
   
   private String                  body      = null;
   private String                  filePath  = null;
+  private long                    groupID   = 0;
   private HashMap<String, String> header    = null;
-  private int                     id        = -1;
+  private int                     numberInGroup = -1;
   
+  /**
+   * Default constructor.
+   */
   public Article()
   {
-    
   }
   
   /**
@@ -84,116 +82,21 @@ public class Article
   {
     this.body = rs.getString("Body");
   }
-
-
-  private void generateNewFileID()
-  {
-    String path = Config.getInstance().get("n3tpd.datadir", ".")
-      + File.separatorChar       
-      + header.get("Newsgroups").replace('.', File.separatorChar) 
-      + File.separatorChar;
-    
-    // Get one filename...
-    int start = 1;
-    File dir  = new File(path);
-    File[] fs = dir.listFiles();
-    if(fs.length > 0)
-    {
-      String number = fs[fs.length-1].getName().substring(0, fs[fs.length-1].getName().indexOf("."));
-      if(number != null)
-        start = Integer.parseInt(number) + 1;
-    }
-
-    for(int n = start;; n++)
-    {
-      String filepath = path + n + ".news";
-      File file = new File(filepath);
-      if(!file.exists())
-      {
-        id = n;
-        return;
-      }
-    }
-  }
   
-  public void loadFromFile()
-    throws IOException
-  {
-    BufferedReader in = new BufferedReader(
-        new InputStreamReader(new FileInputStream(filePath)));
-    
-    // Read header
-    this.header = new HashMap<String, String>();
-    for(;;)
-    {
-      String line = in.readLine();
-      if(line == null) // File is malformed...
-      {
-        // ... and must be deleted
-        in.close();
-        delete();
-        throw new IOException("Malformed article file!");
-      }
-      
-      if(line.trim().equals(""))
-        break;
-      
-      String[] headElement = line.split(":", 2);
-      this.header.put(headElement[0].trim(), headElement[1].trim());
-    }
-    
-    // Read body
-    StringBuilder buffer = new StringBuilder();
-    for(;;)
-    {
-      String line = in.readLine();
-      if(line == null)
-        break;
-      
-      buffer.append(line);
-      buffer.append(NNTPConnection.NEWLINE);
-    }
-    
-    this.body = buffer.toString();
-    
-    in.close();
-  }
-  
-  public void writeToFile()
-    throws IOException
-  {
-    if(id == -1)
-      generateNewFileID();
-    
-    String newsgroup = header.get("Newsgroups");
-    filePath = Config.getInstance().get("n3tpd.datadir", ".") 
-      + File.separatorChar 
-      + newsgroup.replace('.', File.separatorChar) 
-      + File.separatorChar
-      + id + ".news";
-    
-    // Validate and write Header
-    validateHeader();
-    
-    BufferedWriter out = new BufferedWriter(
-        new OutputStreamWriter(new FileOutputStream(filePath)));
-    
-    for(Map.Entry<String, String> h : header.entrySet())
-      out.write(h.getKey() + ": " + h.getValue() + "\n");
-    
-    // Write Body
-    out.write("\n" + body);
-    
-    out.flush();
-    out.close();
-  }
-
-  public Article nextArticleInGroup(Group group)
+  /**
+   * Returnes the next Article in the group of this Article.
+   * @return
+   */
+  public Article nextArticleInGroup()
   {
     return null;
   }
 
-  public Article prevArticleInGroup(Group group)
+  /**
+   * Returns the previous Article in the group of this Article.
+   * @return
+   */
+  public Article prevArticleInGroup()
   {
     return null;
   }
@@ -204,24 +107,28 @@ public class Article
    */
   private String generateMessageID()
   {
-    return this.header.put("Message-ID", "<" + UUID.randomUUID() + "@"
-        + Config.getInstance().get("n3tpd.hostname", "localhost") + ">");
+    String msgID = "<" + UUID.randomUUID() + "@"
+        + Config.getInstance().get("n3tpd.hostname", "localhost") + ">";
+    
+    this.header.put("Message-ID", msgID);
+    
+    return msgID;
   }
 
   /**
    * Tries to delete this article.
-   * @return false if the article could be deleted, otherwise true
+   * @return false if the article could not be deleted, otherwise true
    */
   public boolean delete()
   {
-    File f = new File(filePath);
-    return f.delete();
+    return false;
   }
   
+  /**
+   * Checks if all necessary header fields are within this header.
+   */
   private void validateHeader()
-  {
-    String articleDir = filePath.substring(0, filePath.lastIndexOf(File.separator));
-    
+  {    
     // Forces a MessageID creation if not existing
     getMessageID();
     
@@ -243,10 +150,6 @@ public class Article
     header.put("References", ref);
   }
 
-  /*****************************************************************************
-   * Getters and Setters
-   ****************************************************************************/
-
   /**
    * Returns the body string.
    */
@@ -254,15 +157,48 @@ public class Article
   {
     return body;
   }
+  
+  public long getGroupID()
+  {
+    if(groupID == 0)
+    {
+      // Determining GroupID
+      String   newsgroups = this.header.get("Newsgroups");
+      if(newsgroups != null)
+      {
+        String[] newsgroup  = newsgroups.split(newsgroups);
+        // Crossposting is not supported
+        try
+        {
+          Group group = Database.getInstance().getGroup(newsgroup[0]);
+          // TODO: What to do if Group does not exist?
+          this.groupID = group.getID();
+        }
+        catch(SQLException ex)
+        {
+          ex.printStackTrace(Debug.getInstance().getStream());
+          System.err.println(ex.getLocalizedMessage());
+        }
+      }
+      else
+        System.err.println("Should never happen: Article::getGroupID");
+    }
+    return this.groupID;
+  }
 
   public void setBody(String body)
   {
     this.body = body;
   }
-
-  public int getID()
+  
+  public void setGroupID(long groupID)
   {
-    return id;
+    this.groupID = groupID;
+  }
+
+  public int getNumberInGroup()
+  {
+    return this.numberInGroup;
   }
   
   public void setHeader(HashMap<String, String> header)
@@ -270,9 +206,9 @@ public class Article
     this.header = header;
   }
 
-  public void setID(int id)
+  public void setNumberInGroup(int id)
   {
-    this.id = id;
+    this.numberInGroup = id;
   }
 
   public String getMessageID()
@@ -310,6 +246,7 @@ public class Article
       this.header.put("Date", Long.toString(date.getTime()));
   }
   
+  @Override
   public String toString()
   {
     return getMessageID();

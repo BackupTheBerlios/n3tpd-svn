@@ -19,14 +19,10 @@
 
 package n3tpd.storage;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
-
-import n3tpd.Config;
 import n3tpd.Debug;
 
 /**
@@ -35,15 +31,21 @@ import n3tpd.Debug;
  */
 public class Group
 {
-  private int    id;
+  private long   id;
   private String name;
 
-  private int    firstArticle = Integer.MAX_VALUE;
+  private int    firstArticle = 0;
   private int    lastArticle  = 0;
 
-  private Group(String name)
+  /**
+   * Private constructor.
+   * @param name
+   * @param id
+   */
+  Group(String name, long id)
   {
-    
+    this.id   = id;
+    this.name = name;
   }
   
   /**
@@ -53,7 +55,16 @@ public class Group
    */
   public static Group getByName(String name)
   {
-    return new Group(name);
+    try
+    {
+      return Database.getInstance().getGroup(name);
+    }
+    catch(SQLException ex)
+    {
+      System.err.println(ex.getLocalizedMessage());
+      ex.printStackTrace(Debug.getInstance().getStream());
+      return null;
+    }
   }
 
   /**
@@ -66,11 +77,27 @@ public class Group
     
     try
     {
-      ResultSet raw = Database.getInstance().getGroups();
+      ResultSet rs = Database.getInstance().getGroups();
+      
+      while(rs.next())
+      {
+        String name = rs.getString("Name");
+        long   id   = rs.getLong("ID");
+        
+        // Determine the first and last message number in the Group
+        Group group = new Group(name, id);
+        int first = Database.getInstance().getFirstArticleNumber(group);
+        int last  = Database.getInstance().getLastArticleNumber(group);
+        group.setFirstArticle(first);
+        group.setLastArticle(last);
+        
+        buffer.add(group);
+      }
     }
     catch(SQLException ex)
     {
-      ex.printStackTrace();
+      ex.printStackTrace(Debug.getInstance().getStream());
+      System.err.println(ex.getLocalizedMessage());
     }
     
     return buffer;
@@ -100,12 +127,12 @@ public class Group
     this.firstArticle = firstArticle;
   }
 
-  public int getID()
+  public long getID()
   {
     return id;
   }
 
-  public void setID(int id)
+  public void setID(long id)
   {
     this.id = id;
   }

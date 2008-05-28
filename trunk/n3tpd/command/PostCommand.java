@@ -20,14 +20,17 @@
 package n3tpd.command;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Locale;
+
 import n3tpd.Config;
 import n3tpd.Debug;
 import n3tpd.NNTPConnection;
 import n3tpd.storage.Article;
+import n3tpd.storage.Database;
 
 /**
  * Contains the code for the POST command.
@@ -147,9 +150,17 @@ public class PostCommand extends Command
       header.put("References", "");
 
     // try to create the article in the database
-    article.writeToFile();
-      
-    printStatus(240, "article posted ok");
+    try
+    {
+      Database.getInstance().addArticle(article);
+      printStatus(240, "article posted ok");
+    }
+    catch(SQLException ex)
+    {
+      System.err.println(ex.getLocalizedMessage());
+      ex.printStackTrace(Debug.getInstance().getStream());
+      printStatus(500, "internal server error");
+    }
 
     return true;
   }

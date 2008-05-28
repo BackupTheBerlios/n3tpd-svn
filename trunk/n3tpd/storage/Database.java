@@ -19,6 +19,7 @@
 package n3tpd.storage;
 
 import java.sql.Connection;
+import java.util.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -65,6 +66,22 @@ public class Database
     this.conn = DriverManager.getConnection("jdbc:hsqldb:file:" + path);
     
     checkTables();
+  }
+  
+  public boolean addArticle(Article article)
+    throws SQLException
+  {
+    Statement stmt = this.conn.createStatement();
+    String sql = "INSERT INTO Articles " +
+            "(Body, Date, GroupID, MessageID, NumberInGroup) " +
+            "VALUES (" + 
+            "'" + article.getBody() + "', " + 
+            new Date().getTime() + "," +
+            article.getGroupID() + "," +
+            article.getMessageID() + ", " +
+            article.getNumberInGroup()
+            + ")";
+    return 1 == stmt.executeUpdate(sql);
   }
   
   /**
@@ -123,7 +140,7 @@ public class Database
   }
   
   /**
-   * 
+   * Reads all Groups from the Database.
    * @return
    * @throws java.sql.SQLException
    */
@@ -134,6 +151,47 @@ public class Database
     ResultSet rs = stmt.executeQuery("SELECT * FROM Groups");
     
     return rs;
+  }
+  
+  public Group getGroup(String name)
+    throws SQLException
+  {
+    Statement stmt = this.conn.createStatement();
+    ResultSet rs = stmt.executeQuery("SELECT ID FROM Groups WHERE Name = '" + name + "'");
+  
+    if(!rs.next())
+      return null;
+    else
+    {
+      long id = rs.getLong("ID");
+      return new Group(name, id);
+    }
+  }
+  
+  public int getLastArticleNumber(Group group)
+    throws SQLException
+  {
+    Statement stmt = conn.createStatement();
+    ResultSet rs = 
+      stmt.executeQuery("SELECT Max(NumberInGroup) FROM Articles WHERE GroupID = " + group.getID());
+  
+    if(!rs.next())
+      return 0;
+    else
+      return rs.getInt(1);
+  }
+  
+  public int getFirstArticleNumber(Group group)
+    throws SQLException
+  {
+    Statement stmt = conn.createStatement();
+    ResultSet rs = 
+      stmt.executeQuery("SELECT Min(NumberInGroup) FROM Articles WHERE GroupID = " + group.getID());
+  
+    if(!rs.next())
+      return 0;
+    else
+      return rs.getInt(1);
   }
   
   /**
@@ -184,7 +242,7 @@ public class Database
     return rs.next();
   }
   
-  public void setArticle(Article article)
+  public void updateArticle(Article article)
   {
     
   }

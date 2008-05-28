@@ -37,10 +37,6 @@ public class GroupCommand extends Command
 
   public boolean process(String[] command) throws IOException
   {
-    // String commandName = command[0];
-    // if (!commandName.equalsIgnoreCase("GROUP"))
-    // return false;
-
     // untested, RFC977 compliant
     Group g = null;
     if (command.length >= 2)
@@ -52,12 +48,14 @@ public class GroupCommand extends Command
       printStatus(411, "no such news group");
       return true;
     }
+    else
+    {
+      setCurrentGroup(g);
 
-    setCurrentGroup(g);
-
-    printStatus(211, g.getEstimatedArticleCount() + " " + g.getFirstArticle()
-        + " " + g.getLastArticle() + " " + g.getName() + " group selected");
-    return true;
+      printStatus(211, g.getEstimatedArticleCount() + " " + g.getFirstArticle()
+          + " " + g.getLastArticle() + " " + g.getName() + " group selected");
+      return true;
+    }
   }
 
 }

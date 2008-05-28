@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import n3tpd.Debug;
 import n3tpd.NNTPConnection;
 import n3tpd.storage.Article;
 
@@ -70,11 +71,12 @@ public class ArticleCommand extends Command
       try
       {
         int num = Integer.parseInt(command[1]);
-        article = Article.getByID(connection.getCurrentGroup(), num);
+        article = Article.getByNumberInGroup(connection.getCurrentGroup(), num);
       }
-      catch (Exception e)
+      catch (Exception ex)
       {
-        e.printStackTrace();
+        ex.printStackTrace(Debug.getInstance().getStream());
+        System.err.println(ex.getLocalizedMessage());
       }
       if (article == null)
       {
@@ -86,7 +88,7 @@ public class ArticleCommand extends Command
 
     if (commandName.equalsIgnoreCase("ARTICLE"))
     {
-      printStatus(220, article.getID() + " " + article.getMessageID()
+      printStatus(220, article.getNumberInGroup() + " " + article.getMessageID()
           + " article retrieved - head and body follow");
       HashMap<String, String> header = article.getHeader();
       for(Map.Entry<String, String> entry : header.entrySet())
@@ -109,13 +111,13 @@ public class ArticleCommand extends Command
     }
     else if (commandName.equalsIgnoreCase("BODY"))
     {
-      printStatus(222, article.getID() + " " + article.getMessageID()
+      printStatus(222, article.getNumberInGroup() + " " + article.getMessageID()
           + " body");
       printText(article.getBody());
     }
     else if (commandName.equalsIgnoreCase("STAT"))
     {
-      printStatus(223, article.getID() + " " + article.getMessageID()
+      printStatus(223, article.getNumberInGroup() + " " + article.getMessageID()
           + " article retrieved - request text separately");
     }
     return true;
