@@ -112,8 +112,15 @@ public class Database
   {
     try
     {
-      String sql = Resource.getAsString("helpers/database.sql", false);
-      Statement stmt = conn.createStatement();
+      String sql;
+      Statement stmt;
+      
+      sql = Resource.getAsString("helpers/create_groups.sql", true);
+      stmt = conn.createStatement();
+      stmt.execute(sql);
+      
+      sql = Resource.getAsString("helpers/create_articles.sql", true);
+      stmt = conn.createStatement();
       stmt.execute(sql);
     }
     catch(Exception ex)

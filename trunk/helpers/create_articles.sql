@@ -1,12 +1,3 @@
-CREATE TABLE Groups 
-(
-    ID    bigint NOT NULL,
-    Name 	varchar(255) NOT NULL,
-    
-    UNIQUE(Name),
-    PRIMARY KEY(ID)
-);
-
 CREATE TABLE Articles 
 (
   Body      VARCHAR NOT NULL ,
@@ -18,4 +9,4 @@ CREATE TABLE Articles
   Subject   VARCHAR( 255 ) NOT NULL,
 
   PRIMARY KEY(MessageID)
-);
+)
