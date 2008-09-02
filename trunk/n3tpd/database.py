@@ -470,6 +470,8 @@ class NewsShelf:
 
 
     def initialize(self):
+        print "Initialize NewsShelf..."
+        
         # A dictionary of group name/Group instance items
         self.dbm['groups'] = dirdbm.Shelf(os.path.join(self.path, 'groups'))
 
@@ -543,7 +545,6 @@ class NewsShelf:
         moderator = self.getModerator(groups)
         if moderator and not article.getHeader('Approved'):
             return self.notifyModerator(moderator, article)
-        
         
         for group in groups:
             try:
@@ -708,7 +709,7 @@ class NewsStorageAugmentation:
     );
 
     CREATE UNIQUE INDEX article_id_index ON articles (article_id);
-    CREATE UNIQUE INDEX article_message_index ON articles (message_id);
+    CREATE UNIQUE INDEX article_message_index ON articles (message_id(255));
 
     CREATE TABLE postings (
         group_id      INTEGER,
@@ -832,8 +833,8 @@ class NewsStorageAugmentation:
         for gid in gidToName:
             sql = """
                 INSERT INTO postings (group_id, article_id, article_index)
-                VALUES (%d, (SELECT last_value FROM articles_article_id_seq), %d)
-            """ % (gid, gidToIndex[gid])
+                VALUES (%d, (SELECT article_id FROM articles WHERE message_id = '%s'), %d)
+            """ % (gid, article.getHeader('Message-ID'), gidToIndex[gid])
             transaction.execute(sql)
         
         return len(nameIndex)
