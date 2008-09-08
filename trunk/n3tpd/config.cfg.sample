@@ -4,10 +4,12 @@ config = {}
 config['PORT']    = 119
 
 # Type of the Database backend
+# Possible values: MySQL, SQLite3
 config['DBMS']    = "MySQL"
 
 # The Database user
 config['DB_USER'] = "root"
 
 # Name of the n3tpd Database
+# If the DBMS is in-process a file with this name is used as Database
 config['DB_NAME'] = "n3tpd_data" 
