@@ -40,12 +40,13 @@ def hexdigest(md5): #XXX: argh. 1.5.2 doesn't have this.
     return ''.join(map(lambda x: hex(ord(x))[2:], md5.digest()))
 
 class Article:
+    # TODO: Constructor may not recognize multiline header fields
     def __init__(self, head, body):
         self.body = body
         self.headers = {}
         header = None
         for line in head.split('\r\n'):
-            if line[0] in ' \t':
+            if len(line) > 0 and line[0] in ' \t':
                 i = list(self.headers[header])
                 i[1] += '\r\n' + line
             else:
@@ -876,7 +877,7 @@ class NewsStorageAugmentation:
             WHERE groups.name = '%s' AND postings.group_id = groups.group_id
             AND postings.article_index >= %d
             AND postings.article_index <= %d
-        """ % (adbapi.safe(group), low, high)
+        """ % (adbapi._safe(group), low, high)
 
         return self.dbpool.runQuery(sql).addCallback(
             lambda results: [
@@ -943,7 +944,7 @@ class NewsStorageAugmentation:
                 WHERE postings.article_index = %d
                 AND postings.group_id = groups.group_id
                 AND groups.name = '%s'
-            """ % (index, adbapi.safe(group))
+            """ % (index, adbapi._safe(group))
 
         return self.dbpool.runQuery(sql).addCallback(
             lambda result: (
@@ -962,7 +963,7 @@ class NewsStorageAugmentation:
             WHERE postings.article_index = %d
             AND postings.group_id = groups.group_id
             AND groups.name = '%s'
-        """ % (index, adbapi.safe(group))
+        """ % (index, adbapi._safe(group))
         
         return self.dbpool.runQuery(sql).addCallback(lambda result: result[0])
 
@@ -975,7 +976,7 @@ class NewsStorageAugmentation:
             WHERE postings.article_index = %d
             AND postings.group_id = groups.group_id
             AND groups.name = '%s'
-        """ % (index, adbapi.safe(group))
+        """ % (index, adbapi._safe(group))
         
         return self.dbpool.runQuery(sql).addCallback(
             lambda result: result[0]

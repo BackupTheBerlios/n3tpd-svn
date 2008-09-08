@@ -1,0 +1,13 @@
+config = {}
+
+# TCP/IP Port to listen for incoming connections
+config['PORT']    = 119
+
+# Type of the Database backend
+config['DBMS']    = "MySQL"
+
+# The Database user
+config['DB_USER'] = "root"
+
+# Name of the n3tpd Database
+config['DB_NAME'] = "n3tpd_data" 
