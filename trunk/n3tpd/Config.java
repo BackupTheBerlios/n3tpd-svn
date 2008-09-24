@@ -50,6 +50,7 @@ public class Config
     defaultConfig.setProperty("n3tpd.auxport", "8080");
     defaultConfig.setProperty("n3tpd.server.backlog", "10");
     defaultConfig.setProperty("n3tpd.hostname", "localhost");
+    defaultConfig.setProperty("n3tpd.storage.dbmsdriver", "com.mysql.Driver");
     
     instance = new Config();
   }

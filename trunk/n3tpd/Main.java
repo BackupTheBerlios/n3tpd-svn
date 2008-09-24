@@ -27,7 +27,6 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Enumeration;
 
-import n3tpd.inspector.InspectorFrame;
 import n3tpd.storage.Database;
 import n3tpd.storage.GroupList;
 import n3tpd.storage.Purger;
@@ -40,7 +39,7 @@ import n3tpd.storage.Purger;
 public class Main
 {
   /** Version information of the n3tpd daemon */
-  public static final String VERSION = "n3tpd/0.3 SVN";
+  public static final String VERSION = "n3tpd/0.4 SVN";
 
   /**
    * The main entrypoint.
@@ -52,12 +51,6 @@ public class Main
     System.out.println(VERSION);
     System.out.println("Copyright (C) 2007, 2008 by Christian Lins <christian.lins@web.de>");
     System.out.println("based on tnntpd (C) 2003 by Dennis Schwerdel");
-    
-    // Checking configuration...
-    File dataPath = new File(Config.getInstance().get("n3tpd.datadir", "."));
-    if(!dataPath.exists())
-      if(!dataPath.mkdir())
-        throw new IOException("Could not create data directory!");
 
     // Command line arguments
     boolean auxPort = false;
@@ -71,10 +64,6 @@ public class Main
         while(drvs.hasMoreElements())
           System.out.println(drvs.nextElement());
         return;
-      }
-      else if(args[n].equals("--inspector"))
-      {
-        new InspectorFrame().setVisible(true);
       }
       else if(args[n].equals("--useaux"))
         auxPort = true;

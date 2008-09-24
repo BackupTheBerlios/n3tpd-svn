@@ -1,0 +1,5 @@
+TODO
+====
+
+* Implement new SQL table structure
+* n3tpd/0.4 does not create any structures by itself but expects them
