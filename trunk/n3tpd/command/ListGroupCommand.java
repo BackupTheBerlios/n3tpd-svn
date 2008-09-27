@@ -19,8 +19,7 @@
 
 package n3tpd.command;
 
-import java.io.IOException;
-import java.util.LinkedList;
+import java.util.List;
 import n3tpd.NNTPConnection;
 import n3tpd.storage.Article;
 import n3tpd.storage.Group;
@@ -37,7 +36,8 @@ public class ListGroupCommand extends Command
     super(conn);
   }
 
-  public boolean process(String[] command) throws IOException
+  public boolean process(String[] command) 
+    throws Exception
   {
     String commandName = command[0];
     if (!commandName.equalsIgnoreCase("LISTGROUP"))
@@ -57,7 +57,7 @@ public class ListGroupCommand extends Command
       printStatus(412, "Not currently in newsgroup");
       return true;
     }
-    LinkedList<Article> list = group.getAllArticles();
+    List<Article> list = group.getAllArticles();
     printStatus(211, "list of article numbers follow"); // argh, bad english in
     // RFC
     for (Article a : list)

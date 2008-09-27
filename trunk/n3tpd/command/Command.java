@@ -108,5 +108,5 @@ public abstract class Command
   }
 
   public abstract boolean process(String[] command)
-    throws IOException;
+    throws Exception;
 }

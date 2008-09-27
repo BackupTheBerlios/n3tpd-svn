@@ -34,7 +34,7 @@ import n3tpd.command.ArticleCommand;
 import n3tpd.command.GroupCommand;
 import n3tpd.command.ListCommand;
 import n3tpd.command.PostCommand;
-import n3tpd.command.XOverCommand;
+import n3tpd.command.OverCommand;
 import n3tpd.storage.Article;
 import n3tpd.storage.Group;
 
@@ -227,7 +227,8 @@ public class NNTPConnection extends Thread
    * Command processing
    ****************************************************************************/
 
-  private void processCommand(String[] command) throws IOException
+  private void processCommand(String[] command) 
+    throws Exception
   {
     if (command.length == 0)
       return; // TODO Error
@@ -353,9 +354,10 @@ public class NNTPConnection extends Thread
     }
 
     // X COMMANDS
-    else if(commandName.equalsIgnoreCase("XOVER"))
+    else if(commandName.equalsIgnoreCase("XOVER")
+       || commandName.equalsIgnoreCase("OVER"))
     {
-      XOverCommand cmd = new XOverCommand(this);
+      OverCommand cmd = new OverCommand(this);
       cmd.process(command);
     }
 

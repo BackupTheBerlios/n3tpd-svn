@@ -19,7 +19,6 @@
 package n3tpd.storage;
 
 import java.sql.Connection;
-import java.util.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,9 +26,12 @@ import java.sql.Statement;
 
 import java.util.zip.CRC32;
 import n3tpd.Config;
-import n3tpd.io.Resource;
 import n3tpd.util.StringTemplate;
 
+/**
+ * Database abstraction class.
+ * @author Christian Lins (christian.lins@web.de)
+ */
 public class Database
 {
   private static Database instance = null;
@@ -61,31 +63,59 @@ public class Database
   private Database()
     throws Exception
   {
-    Class.forName("org.hsqldb.jdbcDriver");
-    
-    String path = Config.getInstance().get("n3tpd.datadir", "data/");
-    this.conn = DriverManager.getConnection("jdbc:hsqldb:file:" + path);
-    
-    checkTables();
+    Class.forName(
+            Config.getInstance().get("n3tpd.storage.dbmsdriver", ""));
+    this.conn = DriverManager.getConnection(
+            Config.getInstance().get("n3tpd.storage.database", ""),
+            Config.getInstance().get("n3tpd.storage.user", "n3tpd_user"),
+            Config.getInstance().get("n3tpd.storage.password", ""));
+    this.conn.setAutoCommit(false);
   }
   
+  /**
+   * Adds an article to the database.
+   * @param article
+   * @return
+   * @throws java.sql.SQLException
+   */
   public boolean addArticle(Article article)
     throws SQLException
   {
     Statement stmt = this.conn.createStatement();
 
-    String sql = "INSERT INTO Articles (Body,Date,GroupID,MessageID,NumberInGroup,Subject)" +
-            "VALUES('%body',%date,%gid,'%mid',%nig,'%subject')";
-    
-    StringTemplate tmpl = new StringTemplate(sql);
+    String sql0 = "START TRANSACTION";
+    String sql1 = "INSERT INTO articles (message_id,header,body)" +
+            "VALUES('%mid', '%header', '%body')";
+    StringTemplate tmpl = new StringTemplate(sql1);
     tmpl.set("body", article.getBody());
-    tmpl.set("date", new Date().getTime());
+    tmpl.set("mid", article.getMessageID());
+    tmpl.set("header", article.getHeaderSource());
+    sql1 = tmpl.toString();
+    
+    String sql2 = "COMMIT";
+    
+    // Add statements as batch
+    stmt.addBatch(sql0);
+    stmt.addBatch(sql1);
+    
+    // TODO: For each newsgroup add a reference
+    String sql = "INSERT INTO postings (group_id, article_id, article_index)" +
+                 "VALUES (%gid, (SELECT article_id FROM articles WHERE message_id = '%mid')," +
+                 " %idx)";
+    
+    tmpl = new StringTemplate(sql);
     tmpl.set("gid", article.getGroupID());
     tmpl.set("mid", article.getMessageID());
-    tmpl.set("nig", article.getNumberInGroup());
-    tmpl.set("subject", article.getHeader().get("Subject"));
+    tmpl.set("idx", getMaxArticleIndex() + 1);
+    stmt.addBatch(tmpl.toString());
     
-    return 1 == stmt.executeUpdate(tmpl.toString());
+    // Commit
+    stmt.addBatch(sql2);
+    
+    // And execute the batch
+    stmt.executeBatch();
+    
+    return true;
   }
   
   /**
@@ -105,31 +135,6 @@ public class Database
     return 1 == stmt.executeUpdate("INSERT INTO Groups (ID, Name) VALUES (" + id + ", '" + name + "')");
   }
   
-  /**
-   * Check if all necessary tables are existing.
-   */
-  private void checkTables()
-  {
-    try
-    {
-      String sql;
-      Statement stmt;
-      
-      sql = Resource.getAsString("helpers/create_groups.sql", true);
-      stmt = conn.createStatement();
-      stmt.execute(sql);
-      
-      sql = Resource.getAsString("helpers/create_articles.sql", true);
-      stmt = conn.createStatement();
-      stmt.execute(sql);
-    }
-    catch(Exception ex)
-    {
-      // Silently ignore the exception if the tables already exist.
-      ex.printStackTrace();
-    }
-  }
-  
   public void delete(Article article)
   {
     
@@ -143,9 +148,22 @@ public class Database
   public Article getArticle(String messageID)
     throws SQLException
   {
-    Statement stmt = conn.createStatement();
+    Statement stmt = this.conn.createStatement();
     ResultSet rs =
-      stmt.executeQuery("SELECT * FROM Articles WHERE MessageID = '" + messageID + "'");
+      stmt.executeQuery("SELECT * FROM articles WHERE message_id = '" + messageID + "'");
+    
+    return new Article(rs);
+  }
+  
+  public Article getArticle(long gid, long article_id)
+    throws SQLException
+  {
+    Statement stmt = this.conn.createStatement();
+    String sql = "SELECT * FROM articles WHERE article_id = " +
+            "(SELECT article_id FROM postings WHERE " +
+            "group_id = " + gid + " AND article_id = " + article_id +")";
+    ResultSet rs =
+      stmt.executeQuery(sql);
     
     return new Article(rs);
   }
@@ -154,7 +172,7 @@ public class Database
     throws SQLException
   {
     Statement stmt = conn.createStatement();
-    return stmt.executeQuery("SELECT * FROM Articles");
+    return stmt.executeQuery("SELECT * FROM articles");
   }
   
   /**
@@ -166,7 +184,7 @@ public class Database
     throws SQLException
   {
     Statement stmt = conn.createStatement();
-    ResultSet rs = stmt.executeQuery("SELECT * FROM Groups");
+    ResultSet rs = stmt.executeQuery("SELECT * FROM groups");
     
     return rs;
   }
@@ -181,7 +199,7 @@ public class Database
     throws SQLException
   {   
     Statement stmt = this.conn.createStatement();
-    String sql = "SELECT ID FROM Groups WHERE Name = '%name'";
+    String sql = "SELECT group_id FROM groups WHERE Name = '%name'";
     StringTemplate tmpl = new StringTemplate(sql);
     tmpl.set("name", name);
     
@@ -191,18 +209,31 @@ public class Database
       return null;
     else
     {
-      long id = rs.getLong("ID");
+      long id = rs.getLong("group_id");
       return new Group(name, id);
     }
+  }
+  
+  public int getMaxArticleIndex()
+    throws SQLException
+  {
+    Statement stmt = conn.createStatement();
+    ResultSet rs = stmt.executeQuery(
+      "SELECT Max(article_index) FROM postings");
+    
+    if(!rs.next())
+      return 0;
+    else
+      return rs.getInt(1);
   }
   
   public int getLastArticleNumber(Group group)
     throws SQLException
   {
     Statement stmt = conn.createStatement();
-    ResultSet rs = 
-      stmt.executeQuery("SELECT Max(NumberInGroup) FROM Articles WHERE GroupID = " + group.getID());
-  
+    ResultSet rs = stmt.executeQuery(
+      "SELECT Max(article_index) FROM postings WHERE group_id = " + group.getID());
+    
     if(!rs.next())
       return 0;
     else
@@ -213,8 +244,8 @@ public class Database
     throws SQLException
   {
     Statement stmt = conn.createStatement();
-    ResultSet rs = 
-      stmt.executeQuery("SELECT Min(NumberInGroup) FROM Articles WHERE GroupID = " + group.getID());
+    ResultSet rs = stmt.executeQuery(
+      "SELECT Min(article_index) FROM postings WHERE group_id = " + group.getID());
   
     if(!rs.next())
       return 0;
@@ -232,7 +263,8 @@ public class Database
     throws SQLException
   {
     Statement stmt = conn.createStatement();
-    ResultSet rs   = stmt.executeQuery("SELECT Name FROM Groups WHERE ID = " + id);
+    ResultSet rs   = stmt.executeQuery(
+            "SELECT name FROM groups WHERE group_id = '" + id + "'");
     
     if(rs.next())
     {

@@ -45,12 +45,14 @@ public class Config
     // Set some default values
     defaultConfig.setProperty("n3tpd.article.lifetime", "300"); // 300 days
     defaultConfig.setProperty("n3tpd.article.maxsize", "100");  // 100 kbyte
-    defaultConfig.setProperty("n3tpd.datadir", "data/");
     defaultConfig.setProperty("n3tpd.port", "119");
     defaultConfig.setProperty("n3tpd.auxport", "8080");
     defaultConfig.setProperty("n3tpd.server.backlog", "10");
     defaultConfig.setProperty("n3tpd.hostname", "localhost");
-    defaultConfig.setProperty("n3tpd.storage.dbmsdriver", "com.mysql.Driver");
+    defaultConfig.setProperty("n3tpd.storage.database", "jdbc:mysql://localhost/n3tpd_data");
+    defaultConfig.setProperty("n3tpd.storage.dbmsdriver", "com.mysql.jdbc.Driver");
+    defaultConfig.setProperty("n3tpd.storage.user", "n3tpd_user");
+    defaultConfig.setProperty("n3tpd.storage.password", "mysecret");
     
     instance = new Config();
   }

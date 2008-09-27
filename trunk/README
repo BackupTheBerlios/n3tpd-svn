@@ -1,2 +1,21 @@
 n3tpd README
 ============
+
+Prerequisites:
+--------------
+
+* Java Runtime, Version 1.5
+* MySQL, Version 5 or higher
+
+
+Installation:
+-------------
+
+* Create a database in your DBMS, e.g. named like 'n3tpd_data'
+* Create the necessary table structure using the helpers/table.sql file
+
+Bugs and other Issues:
+----------------------
+
+Please mail them to christian.lins@web.de or, better, issue them
+into our bugtracker at http://bugs.netvader.net/ .

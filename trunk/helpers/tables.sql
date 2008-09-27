@@ -7,7 +7,7 @@ create database n3tpd_data;
         flags         INTEGER DEFAULT 0 NOT NULL
     );
 
-    CREATE UNIQUE INDEX group_id_index ON groups (group_id);
+    --- CREATE UNIQUE INDEX group_id_index ON groups (group_id);
     CREATE UNIQUE INDEX name_id_index ON groups (name);
 
     CREATE TABLE articles (
@@ -18,7 +18,7 @@ create database n3tpd_data;
         body          TEXT
     );
 
-    CREATE UNIQUE INDEX article_id_index ON articles (article_id);
+    --- CREATE UNIQUE INDEX article_id_index ON articles (article_id);
     CREATE UNIQUE INDEX article_message_index ON articles (message_id(255));
 
     CREATE TABLE postings (

@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import n3tpd.Debug;
 
 /**
@@ -33,9 +34,6 @@ public class Group
 {
   private long   id;
   private String name;
-
-  private int    firstArticle = 0;
-  private int    lastArticle  = 0;
 
   /**
    * Private constructor.
@@ -81,16 +79,10 @@ public class Group
       
       while(rs.next())
       {
-        String name = rs.getString("Name");
-        long   id   = rs.getLong("ID");
+        String name = rs.getString("name");
+        long   id   = rs.getLong("group_id");
         
-        // Determine the first and last message number in the Group
         Group group = new Group(name, id);
-        int first = Database.getInstance().getFirstArticleNumber(group);
-        int last  = Database.getInstance().getLastArticleNumber(group);
-        group.setFirstArticle(first);
-        group.setLastArticle(last);
-        
         buffer.add(group);
       }
     }
@@ -103,7 +95,8 @@ public class Group
     return buffer;
   }
 
-  public LinkedList<Article> getAllArticles()
+  public List<Article> getAllArticles()
+    throws SQLException
   {
     return getAllArticles(getFirstArticle(), getLastArticle());
   }
@@ -118,13 +111,9 @@ public class Group
    ****************************************************************************/
 
   public int getFirstArticle()
+    throws SQLException
   {
-    return firstArticle;
-  }
-
-  public void setFirstArticle(int firstArticle)
-  {
-    this.firstArticle = firstArticle;
+    return Database.getInstance().getFirstArticleNumber(this);
   }
 
   public long getID()
@@ -138,13 +127,9 @@ public class Group
   }
 
   public int getLastArticle()
+    throws SQLException
   {
-    return lastArticle;
-  }
-
-  public void setLastArticle(int lastArticle)
-  {
-    this.lastArticle = lastArticle;
+    return Database.getInstance().getLastArticleNumber(this);
   }
 
   public String getName()
@@ -158,6 +143,7 @@ public class Group
   }
 
   public int getEstimatedArticleCount()
+    throws SQLException
   {
     if (getLastArticle() < getFirstArticle())
       return 0;

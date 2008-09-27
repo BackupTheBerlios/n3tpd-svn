@@ -21,7 +21,6 @@ package n3tpd.command;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import n3tpd.Debug;
@@ -90,7 +89,7 @@ public class ArticleCommand extends Command
     {
       printStatus(220, article.getNumberInGroup() + " " + article.getMessageID()
           + " article retrieved - head and body follow");
-      HashMap<String, String> header = article.getHeader();
+      Map<String, String> header = article.getHeader();
       for(Map.Entry<String, String> entry : header.entrySet())
       {
         if(entry.getKey().equals("Date"))

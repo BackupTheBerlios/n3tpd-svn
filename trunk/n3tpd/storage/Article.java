@@ -23,6 +23,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import n3tpd.Config;
@@ -54,15 +56,17 @@ public class Article
   }
   
   public static Article getByNumberInGroup(Group group, int number)
+    throws SQLException
   {
-    return null;
+    long gid = group.getID(); 
+    return Database.getInstance().getArticle(gid, number); // Is number her correct?
   }
   
-  private String                  body      = null;
-  private String                  filePath  = null;
-  private long                    groupID   = 0;
-  private HashMap<String, String> header    = null;
-  private int                     numberInGroup = -1;
+  private String              body      = "";
+  private long                groupID   = -1;
+  private Map<String, String> header    = new HashMap<String, String>();
+  private int                 numberInGroup = -1;
+  private String              msgID     = null;
   
   /**
    * Default constructor.
@@ -80,7 +84,11 @@ public class Article
   public Article(ResultSet rs)
     throws SQLException
   {
-    this.body = rs.getString("Body");
+    this.body  = rs.getString("body");
+    this.msgID = rs.getString("message_id");
+    
+    // Parse the header
+    String header = rs.getString("header");
   }
   
   /**
@@ -107,7 +115,7 @@ public class Article
    */
   private String generateMessageID()
   {
-    String msgID = "<" + UUID.randomUUID() + "@"
+    this.msgID = "<" + UUID.randomUUID() + "@"
         + Config.getInstance().get("n3tpd.hostname", "localhost") + ">";
     
     this.header.put("Message-ID", msgID);
@@ -144,7 +152,7 @@ public class Article
       Article art = null; //TODO // getByMessageID(rep, articleDir);
       if(art != null)
       {
-        ref = art.getHeader().get("References") + " " + rep;
+        ref = art.header.get("References") + " " + rep;
       }
     }
     header.put("References", ref);
@@ -217,15 +225,31 @@ public class Article
 
   public String getMessageID()
   {
-    String msgID = header.get("Message-ID");
     if(msgID == null)
       msgID = generateMessageID();
     return msgID;
   }
 
-  public HashMap<String, String> getHeader()
+  /**
+   * @return Header source code of this Article.
+   */
+  public String getHeaderSource()
   {
-    return header;
+    StringBuffer buf = new StringBuffer();
+    
+    for(Entry<String, String> entry : this.header.entrySet())
+    {
+      buf.append(entry.getKey());
+      buf.append(":");
+      buf.append(entry.getValue());
+    }
+    
+    return buf.toString();
+  }
+  
+  public Map<String, String> getHeader()
+  {
+    return this.header;
   }
   
   public Date getDate()

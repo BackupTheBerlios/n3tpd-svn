@@ -20,7 +20,6 @@
 package n3tpd;
 
 import java.io.IOException;
-import java.net.BindException;
 import java.net.ServerSocket;
 
 /**
@@ -57,7 +56,7 @@ public class NNTPDaemon extends Thread
       {
         new NNTPConnection(socket.accept()).start();
       }
-      catch (IOException e)
+      catch (Exception e)
       {
         e.printStackTrace();
       }

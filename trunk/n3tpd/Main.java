@@ -19,8 +19,6 @@
 
 package n3tpd;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.BindException;
 
 import java.sql.Driver;
@@ -39,7 +37,7 @@ import n3tpd.storage.Purger;
 public class Main
 {
   /** Version information of the n3tpd daemon */
-  public static final String VERSION = "n3tpd/0.4 SVN";
+  public static final String VERSION = "n3tpd/0.4alpha1";
 
   /**
    * The main entrypoint.
@@ -97,8 +95,6 @@ public class Main
     {
       ex.printStackTrace(Debug.getInstance().getStream());
       System.err.println("Could not bind to interface. Perhaps you need superuser rights?");
-
-      return;
     }
     
     // Start auxilary listening port...

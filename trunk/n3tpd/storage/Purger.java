@@ -75,7 +75,7 @@ public class Purger extends Thread
     {
       for(;;)
       {
-        Article art = Database.getInstance().getOldestArticle();
+        Article art = null; //Database.getInstance().getOldestArticle();
         if(art == null) // No articles in the database
           break;
         
