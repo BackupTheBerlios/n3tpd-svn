@@ -195,9 +195,12 @@ public class Article
     return body;
   }
   
-  public long getGroupID()
+  /**
+   * @return Numerical ID of the associated Group.
+   */
+  long getGroupID()
   {
-    if(groupID == 0)
+    if(groupID == -1) // If the GroupID was not determined yet
     {
       // Determining GroupID
       String   newsgroups = this.header.get("Newsgroups");
@@ -230,11 +233,6 @@ public class Article
   public void setBody(String body)
   {
     this.body = body;
-  }
-  
-  public void setGroupID(long groupID)
-  {
-    this.groupID = groupID;
   }
 
   public int getNumberInGroup()

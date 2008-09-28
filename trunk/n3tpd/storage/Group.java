@@ -22,7 +22,6 @@ package n3tpd.storage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import n3tpd.Debug;
 
@@ -101,14 +100,10 @@ public class Group
     return getAllArticles(getFirstArticle(), getLastArticle());
   }
 
-  public LinkedList<Article> getAllArticles(int first, int last)
+  public List<Article> getAllArticles(int first, int last)
   {
     return null;
   }
-
-  /*****************************************************************************
-   * Getters and Setters
-   ****************************************************************************/
 
   public int getFirstArticle()
     throws SQLException
@@ -119,11 +114,6 @@ public class Group
   public long getID()
   {
     return id;
-  }
-
-  public void setID(long id)
-  {
-    this.id = id;
   }
 
   public int getLastArticle()

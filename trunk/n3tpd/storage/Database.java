@@ -58,8 +58,12 @@ public class Database
     }
   }
   
-  private Connection conn;
+  private Connection conn = null;
   
+  /**
+   * Private constructor.
+   * @throws java.lang.Exception
+   */
   private Database()
     throws Exception
   {
