@@ -165,7 +165,10 @@ public class Database
     ResultSet rs =
       stmt.executeQuery(sql);
     
-    return new Article(rs);
+    if(rs.next())
+      return new Article(rs);
+    else
+      return null;
   }
   
   public ResultSet getArticles()

@@ -76,6 +76,12 @@ public class Debug
    */
   public void log(Object msg)
   {
+    log(out, msg);
+    log(System.out, msg);
+  }
+  
+  public void log(PrintStream out, Object msg)
+  {
     out.print(new Date().toString());
     out.print(": ");
     out.println(msg.toString());

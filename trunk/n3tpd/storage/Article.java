@@ -88,7 +88,36 @@ public class Article
     this.msgID = rs.getString("message_id");
     
     // Parse the header
-    String header = rs.getString("header");
+    parseHeader(rs.getString("header"));
+  }
+  
+  /**
+   * Parses the header fields and puts them into a map for faster access.
+   * TODO: There could be fields that go over more than one line, some
+   * bad clients do create them.
+   * @param hsrc
+   */
+  private void parseHeader(String hsrc)
+  {
+    String[] lines = hsrc.split("\n");
+    
+    for(String line : lines)
+    {
+      String[] kv = line.split(":");
+      if(kv.length < 2)
+      {
+        Debug.getInstance().log("Invalid header field: " + line);
+        continue;
+      }
+      else
+      {
+        // Set value in the header hash map
+        String value = kv[1];
+        for(int n = 2; n < kv.length; n++)
+          value += ":" + kv[n];
+        this.header.put(kv[0], value);
+      }
+    }
   }
   
   /**
@@ -242,6 +271,7 @@ public class Article
       buf.append(entry.getKey());
       buf.append(":");
       buf.append(entry.getValue());
+      buf.append("\n");
     }
     
     return buf.toString();
@@ -257,9 +287,9 @@ public class Article
     try
     {
       String date = this.header.get("Date");
-      return new Date(Long.parseLong(date));
+      return new Date(Date.parse(date));
     }
-    catch(IllegalArgumentException e)
+    catch(Exception e)
     {
       e.printStackTrace(Debug.getInstance().getStream());
       return null;
@@ -268,10 +298,7 @@ public class Article
 
   public void setDate(Date date)
   {
-    if(this.header == null)
-      Debug.getInstance().log("Article.class::setDate()\tHeader is null! Called before setHeader?");
-    else
-      this.header.put("Date", Long.toString(date.getTime()));
+    this.header.put("Date", date.toString());
   }
   
   @Override

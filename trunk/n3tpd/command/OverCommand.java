@@ -22,6 +22,7 @@ package n3tpd.command;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import n3tpd.Debug;
 import n3tpd.NNTPConnection;
 import n3tpd.storage.Article;
 
@@ -142,7 +143,14 @@ public class OverCommand extends Command
       for(int n = artStart; n <= artEnd; n++)
       {
         Article art = Article.getByNumberInGroup(getCurrentGroup(), n);
-        printTextPart(buildOverview(art, n) + NEWLINE);
+        if(art == null)
+        {
+          Debug.getInstance().log("Article (gid=" + getCurrentGroup() + ", art=" + n + " is null!");
+        }
+        else
+        {
+          printTextPart(buildOverview(art, n) + NEWLINE);
+        }
       }
       println(".");
       flush();
