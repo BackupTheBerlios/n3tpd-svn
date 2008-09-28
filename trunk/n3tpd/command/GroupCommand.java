@@ -19,7 +19,6 @@
 
 package n3tpd.command;
 
-import java.io.IOException;
 import n3tpd.NNTPConnection;
 import n3tpd.storage.Group;
 
@@ -35,7 +34,8 @@ public class GroupCommand extends Command
     super(conn);
   }
 
-  public boolean process(String[] command) throws IOException
+  public boolean process(String[] command) 
+    throws Exception
   {
     // untested, RFC977 compliant
     Group g = null;

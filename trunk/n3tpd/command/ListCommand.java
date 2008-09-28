@@ -36,7 +36,8 @@ public class ListCommand extends Command
     super(conn);
   }
 
-  public boolean process(String[] command) throws IOException
+  public boolean process(String[] command) 
+    throws Exception
   {
     if (command.length >= 2)
     {
