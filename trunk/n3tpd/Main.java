@@ -1,7 +1,6 @@
 /*
  *   Neat NNTP Daemon (n3tpd)
  *   Copyright (C) 2007, 2008 by Christian Lins <christian.lins@web.de>
- *   based on tnntpd (C) 2003 by Dennis Schwerdel
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -26,13 +25,11 @@ import java.sql.DriverManager;
 import java.util.Enumeration;
 
 import n3tpd.storage.Database;
-import n3tpd.storage.GroupList;
 import n3tpd.storage.Purger;
 
 /**
  * Startup class of the n3tpd.
  * @author Christian Lins
- * @author Dennis Schwerdel
  */
 public class Main
 {
@@ -48,7 +45,6 @@ public class Main
   {
     System.out.println(VERSION);
     System.out.println("Copyright (C) 2007, 2008 by Christian Lins <christian.lins@web.de>");
-    System.out.println("based on tnntpd (C) 2003 by Dennis Schwerdel");
 
     // Command line arguments
     boolean auxPort = false;
@@ -79,9 +75,6 @@ public class Main
       
       return;
     }
-    
-    // Load the groups.list file
-    GroupList.arise();
     
     // Start the n3tpd garbage collector
     new Purger().start();

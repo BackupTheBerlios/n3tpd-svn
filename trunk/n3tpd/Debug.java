@@ -80,6 +80,11 @@ public class Debug
     log(System.out, msg);
   }
   
+  /**
+   * Writes the given debug message to the given PrintStream.
+   * @param out
+   * @param msg
+   */
   public void log(PrintStream out, Object msg)
   {
     out.print(new Date().toString());

@@ -21,7 +21,7 @@ package n3tpd.util;
 import java.util.HashMap;
 
 /**
- *
+ * Class that allows simple String template handling.
  * @author Christian Lins (christian.lins@web.de)
  */
 public class StringTemplate 

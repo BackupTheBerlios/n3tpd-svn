@@ -29,6 +29,7 @@ import java.nio.charset.Charset;
 
 /**
  * Provides method for loading of resources.
+ * @author Christian Lins
  */
 public class Resource
 {
@@ -51,18 +52,19 @@ public class Resource
   }
   
   /**
-   * Laedt eine Resource und gibt einen Verweis auf sie als
-   * URL zurueck.
+   * Loads a resource and returns it as URL reference.
+   * The Resource's classloader is used to load the resource, not
+   * the System's ClassLoader so it may be safe to use this method
+   * in a sandboxed environment.
    * @return
    */
   public static URL getAsURL(String name)
   {
-    return ClassLoader.getSystemClassLoader().getResource(name);
+    return Resource.class.getClassLoader().getResource(name);
   }
   
   /**
-   * Laedt eine Resource und gibt einen InputStream darauf
-   * zurueck.
+   * Loads a resource and returns an InputStream to it.
    * @param name
    * @return
    */
@@ -81,7 +83,9 @@ public class Resource
   }
 
   /**
-   * Laedt eine Textdatei komplett in einen String.
+   * Loads a plain text resource.
+   * @param withNewline If false all newlines are removed from the 
+   * return String
    */
   public static String getAsString(String name, boolean withNewline)
   {
