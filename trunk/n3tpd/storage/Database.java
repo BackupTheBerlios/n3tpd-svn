@@ -36,6 +36,13 @@ public class Database
 {
   private static Database instance = null;
   
+  /**
+   * Initializes the Database subsystem, e.g. loading a JDBC driver and
+   * connection to the Database Managment System.
+   * This method is called when the daemon starts up or at the first
+   * call to Database.getInstance().
+   * @throws java.lang.Exception
+   */
   public static void arise()
     throws Exception
   {
@@ -44,6 +51,10 @@ public class Database
       instance = new Database();
   }
   
+  /**
+   * @return Instance of the current Database backend. Returns null if an error
+   * has occurred.
+   */
   public static Database getInstance()
   {
     try

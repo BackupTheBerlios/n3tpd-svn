@@ -43,7 +43,7 @@ public class Purger extends Thread
   }
   
   /**
-   * Runloop of this PurgerThread class.
+   * Runloop of this Purger class.
    */
   @Override
   public void run()

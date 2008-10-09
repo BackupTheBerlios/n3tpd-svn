@@ -79,9 +79,10 @@ public class Article
    * Creates a new Article object using the date from the given
    * ResultSet. It is expected that ResultSet.next() was already
    * called by the Database class.
+   * This construction has only package visibility.
    * @param rs
    */
-  public Article(ResultSet rs)
+  Article(ResultSet rs)
     throws SQLException
   {
     this.body  = rs.getString("body");

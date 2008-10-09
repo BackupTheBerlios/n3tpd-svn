@@ -33,6 +33,12 @@ import java.nio.charset.Charset;
  */
 public class Resource
 {
+  /**
+   * Loads a file as array of byte. As the file is completely loaded into
+   * memory this method should only be used with small files.
+   * @param file
+   * @return
+   */
   public static byte[] getBytes(File file)
   {
     try

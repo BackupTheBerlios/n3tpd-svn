@@ -34,7 +34,7 @@ import n3tpd.storage.Purger;
 public class Main
 {
   /** Version information of the n3tpd daemon */
-  public static final String VERSION = "n3tpd/0.4alpha1";
+  public static final String VERSION = "n3tpd/0.4alpha2";
 
   /**
    * The main entrypoint.

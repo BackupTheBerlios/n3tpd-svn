@@ -30,6 +30,7 @@ import java.net.SocketException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 import n3tpd.command.ArticleCommand;
 import n3tpd.command.GroupCommand;
 import n3tpd.command.ListCommand;
@@ -53,11 +54,16 @@ public class NNTPConnection extends Thread
   private boolean            exit               = false;
   private BufferedWriter     out;
   private BufferedReader     in;
-  private File               articleDir         = new File(Config.getInstance().get("n3tpd.datadir", "."));
   private Article            currentArticle     = null;
   private Group              currentGroup       = null;
 
-  public NNTPConnection(Socket socket) throws IOException
+  /**
+   * Creates a new NNTPConnection instance using the given connected Socket.
+   * @param socket
+   * @throws java.io.IOException
+   */
+  public NNTPConnection(Socket socket) 
+    throws IOException
   {
     this.socket = socket;
     this.in     = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -83,10 +89,6 @@ public class NNTPConnection extends Thread
       e.printStackTrace();
     }
   }
-
-  /*****************************************************************************
-   * Printing to the stream
-   ****************************************************************************/
 
   /**
    * Prints a CharSequence to the sockets output stream.
@@ -136,10 +138,6 @@ public class NNTPConnection extends Thread
     out.flush();
   }
 
-  /*****************************************************************************
-   * Reading from the stream
-   ****************************************************************************/
-
   public String readln() throws IOException
   {
     String s = in.readLine();
@@ -155,9 +153,9 @@ public class NNTPConnection extends Thread
     return readln().split("[ ]+");
   }
 
-  public LinkedList<String> readText() throws IOException
+  public List<String> readText() throws IOException
   {
-    LinkedList<String> l = new LinkedList<String>();
+    List<String> l = new LinkedList<String>();
     String s;
     do
     {
@@ -166,7 +164,7 @@ public class NNTPConnection extends Thread
       {
         if (s.startsWith(".."))
           s = s.substring(1);
-        l.addLast(s);
+        l.add(s);
       }
     }
     while (!s.equals("."));
@@ -188,17 +186,6 @@ public class NNTPConnection extends Thread
     return s;
   }
 
-  /*****************************************************************************
-   * Article commands
-   ****************************************************************************/
-
-  public File getArticleDir()
-  {
-    if (!articleDir.exists())
-      articleDir.mkdir();
-    return articleDir;
-  }
-
   public void setCurrentArticle(Article current)
   {
     currentArticle = current;
@@ -209,10 +196,6 @@ public class NNTPConnection extends Thread
     return currentArticle;
   }
 
-  /*****************************************************************************
-   * Group commands
-   ****************************************************************************/
-
   public void setCurrentGroup(Group current)
   {
     currentGroup = current;
@@ -222,10 +205,6 @@ public class NNTPConnection extends Thread
   {
     return currentGroup;
   }
-
-  /*****************************************************************************
-   * Command processing
-   ****************************************************************************/
 
   private void processCommand(String[] command) 
     throws Exception

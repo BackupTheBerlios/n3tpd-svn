@@ -19,9 +19,8 @@
 
 package n3tpd.command;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.List;
 import n3tpd.NNTPConnection;
 import n3tpd.storage.Article;
 import n3tpd.storage.Group;
@@ -42,7 +41,8 @@ public abstract class Command
 
   protected static String NEWLINE = NNTPConnection.NEWLINE;
 
-  protected LinkedList<String> readText() throws IOException
+  protected List<String> readText() 
+    throws IOException
   {
     return connection.readText();
   }
@@ -100,11 +100,6 @@ public abstract class Command
   protected void setCurrentGroup(Group current)
   {
     connection.setCurrentGroup(current);
-  }
-
-  protected File getArticleDir()
-  {
-    return connection.getArticleDir();
   }
 
   public abstract boolean process(String[] command)
