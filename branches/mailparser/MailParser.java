@@ -1,8 +1,10 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Parser the reads and generates Mail instances from an given InputStream.
@@ -19,9 +21,10 @@ public class MailParser
   public Mail parse(InputStream in)
     throws IOException
   {
-    BufferedReader br       = new BufferedReader(new InputStreamReader(in));
-    boolean        isHeader = true;
-    String         lastHeaderField = null;
+    BufferedReader      br       = new BufferedReader(new InputStreamReader(in));
+    boolean             isHeader = true;
+    String              lastHeaderField = null;
+    Map<String, List<HeaderEntry>> header   = new HashMap<String, List<HeaderEntry>>();
     
     for(String line = br.readLine(); line != null; line = br.readLine())
     {
@@ -42,14 +45,32 @@ public class MailParser
           isHeader = false;
         else
         {
+          // Perhaps it is an unfolded header field
           if(line.startsWith(" ") || line.startsWith("\t"))
           {
+            // Check for invalid header
+            if(lastHeaderField == null)
+            {
+              System.out.println("Invalid header field. Trying to continue...");
+              continue;
+            }
             
+            // Add the current line to the last header field
+            HeaderEntry lastVal = header.get(lastHeaderField);
+            lastVal += line.trim();
+            header.put(lastHeaderField, lastVal);
           }
           else
           {
             String[] headline = line.split(":", 2);
-            System.out.println("HEADER: " + headline[0]);
+            String   value    = header.get(headline[0]);
+            if(value != null)
+              value += "\n" + headline[1].trim();
+            else
+              value = headline[1].trim();
+            
+            header.put(headline[0], value);
+            lastHeaderField = headline[0];
           }
         }
       }
@@ -59,6 +80,6 @@ public class MailParser
       }
     }
     
-    return null;
+    return new Mail(header, "");
   }
 }

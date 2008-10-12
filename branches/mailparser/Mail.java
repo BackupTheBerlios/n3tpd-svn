@@ -1,4 +1,7 @@
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class represents an E-Mail as defined in RFC2822
@@ -31,4 +34,65 @@ public class Mail
 {
   public static int DEFAULT_LINE_LENGTH = 78;  // 80 incl. CRLF
   public static int MAX_LINE_LENGTH     = 998; // 1000 incl. CRLF
+  
+  private Map<String, List<HeaderEntry>> header    = null;
+  
+  Mail(Map<String, List<HeaderEntry>> header, String body)
+  {
+    this.header = header;
+  }
+  
+  @Override
+  public String toString()
+  {
+    StringBuffer buf = new StringBuffer();
+    
+    List<String> keys = new ArrayList<String>(this.header.keySet());
+    Collections.sort(keys);
+    
+    // Loop over all header keys
+    for(String key : keys)
+    {
+      String rawval = "";// this.header.get(key);
+      
+      // Some header fields can occure multiple times (e.g. Received).
+      // They are stored with only one key, but splitted by newlines.
+      String[] values = rawval.split("\n");
+      
+      for(String value : values)
+      {
+        buf.append(key);
+        buf.append(": ");
+
+        if(value.length() <= DEFAULT_LINE_LENGTH)
+        {
+          buf.append(value);
+        }
+        else
+        {
+          // Special handling for the first line, so that the output looks
+          // more beautiful
+          buf.append(value.substring(0, DEFAULT_LINE_LENGTH));
+          buf.append("\n");
+          value = value.substring(DEFAULT_LINE_LENGTH);
+          
+          // Some header lines are very long, so we have to unfold them
+          while(value.length() > DEFAULT_LINE_LENGTH)
+          {
+            buf.append("  ");
+            buf.append(value.substring(0, DEFAULT_LINE_LENGTH));
+            buf.append("\n");
+            value = value.substring(DEFAULT_LINE_LENGTH);
+          }
+          
+          // And add the last chunk
+          buf.append("  ");
+          buf.append(value);
+        }
+        buf.append("\n");
+      }
+    }
+    
+    return buf.toString();
+  }
 }

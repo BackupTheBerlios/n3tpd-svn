@@ -6,6 +6,7 @@ import java.io.FileInputStream;
  * and open the template in the editor.
  */
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  *
@@ -17,6 +18,10 @@ public class Main
     throws IOException
   {
     MailParser mailParser = new MailParser();
-    mailParser.parse(new FileInputStream("test.txt"));
+    Mail mail = mailParser.parse(new FileInputStream("test.txt"));
+    
+    PrintWriter out = new PrintWriter("test1.txt");
+    out.write(mail.toString());
+    out.close();
   }
 }
