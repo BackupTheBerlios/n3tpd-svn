@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ public class MailParser
 {
   /**
    * Reads and parses lines from the given InputStream and returns an
-   * intrepeted Mail instance.
+   * interpreted Mail instance.
    * @param in
    * @return
    */
@@ -56,25 +57,40 @@ public class MailParser
             }
             
             // Add the current line to the last header field
-            HeaderEntry lastVal = header.get(lastHeaderField);
-            lastVal += line.trim();
-            header.put(lastHeaderField, lastVal);
-          }
-          else
-          {
-            String[] headline = line.split(":", 2);
-            String   value    = header.get(headline[0]);
-            if(value != null)
-              value += "\n" + headline[1].trim();
+            List<HeaderEntry> entries = header.get(lastHeaderField);
+            if(entries == null)
+            {
+              // TODO: Error handling
+              // This happens only when the mail is extremly malformed
+            }
             else
-              value = headline[1].trim();
+            {
+              HeaderEntry lastVal = entries.get(entries.size() - 1);
+              lastVal.addToValue(line.trim());
+            }
+          }
+          else // Begin of a new header field
+          {
+            String[] headline         = line.split(":", 2); // Split at first ':'
+            List<HeaderEntry> entries = header.get(headline[0]);
             
-            header.put(headline[0], value);
+            // If it's the first one of this entry type
+            if(entries == null)
+            {
+              entries = new ArrayList<HeaderEntry>();
+              header.put(headline[0], entries);
+            }
+            
+            // Add new entry
+            String value = headline[1].trim();
+            HeaderEntry entry = new HeaderEntry(headline[0], value);
+            entries.add(entry);
+            
             lastHeaderField = headline[0];
           }
         }
       }
-      else
+      else // Read the body
       {
         
       }
